@@ -312,10 +312,7 @@ export default function TeamReviews() {
 
     // Принудительно запускаем и следим за автоскроллом
     const autoScrollPlugin = teamEmblaApi.plugins()?.autoScroll;
-    if (autoScrollPlugin) {
-      // @ts-expect-error
-      autoScrollPlugin.play();
-    }
+    autoScrollPlugin?.play?.();
 
     let raf = 0;
     const sync = () => {
@@ -327,10 +324,7 @@ export default function TeamReviews() {
 
     // Принудительно перезапускаем автоскролл при любом событии
     const restartAutoScroll = () => {
-      if (autoScrollPlugin) {
-        // @ts-expect-error
-        autoScrollPlugin.play();
-      }
+      autoScrollPlugin?.play?.();
     };
 
     teamEmblaApi.on("select", sync);
