@@ -67,10 +67,14 @@ export default function Navbar({
       <div className="max-w-container relative mx-auto">
         <NavbarComponent>
           <NavbarLeft>
-            <div className="flex items-center gap-2 text-xl font-bold">
+            <a
+              href="/"
+              className="flex items-center gap-2 text-xl font-bold transition-opacity hover:opacity-80"
+              aria-label="Altai AI"
+            >
               {logo}
               {name}
-            </div>
+            </a>
           </NavbarLeft>
 
           <NavbarCenter>
@@ -123,9 +127,14 @@ export default function Navbar({
               </SheetTrigger>
               <SheetContent side="right">
                 <nav className="grid gap-6 text-lg font-medium">
-                  <div className="flex items-center gap-2 text-xl font-bold">
+                  <a
+                    href="/"
+                    className="flex items-center gap-2 text-xl font-bold"
+                    aria-label="Altai AI"
+                  >
+                    {logo}
                     <span>{name}</span>
-                  </div>
+                  </a>
                   {mobileLinks.map((link, index) => (
                     <a
                       key={index}
