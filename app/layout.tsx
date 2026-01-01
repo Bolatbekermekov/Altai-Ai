@@ -8,12 +8,32 @@ import { inter } from "@/lib/fonts";
 import { siteConfig } from "../config/site";
 
 export const metadata: Metadata = {
-  icons:{ icon: "/favicon.svg",},
+  metadataBase: siteConfig.url ? new URL(siteConfig.url) : undefined,
+  icons: { icon: "/favicon.svg" },
   title: {
     default: siteConfig.name,
     template: `%s - ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  openGraph: {
+    title: siteConfig.name,
+    description: siteConfig.description,
+    url: siteConfig.url || undefined,
+    siteName: siteConfig.name,
+    images: [
+      {
+        url: siteConfig.ogImage || "/dashboard-dark.png",
+        width: 1200,
+        height: 630,
+        alt: siteConfig.name,
+      },
+    ],
+    locale: "ru_RU",
+    type: "website",
+  },
+  alternates: {
+    canonical: siteConfig.url || undefined,
+  },
   keywords: [
     "Шаблон лендинга",
     "Компоненты",
