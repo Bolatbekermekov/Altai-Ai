@@ -1,10 +1,10 @@
 export const siteConfig = {
   name: "Altai AI",
-  url: "https://altai-ai.cloud", // обнови, если домен изменится
+  url: "https://altai-ai.pages.dev", // обнови, если домен изменится
   getStartedUrl: "https://wa.me/77757200604",
   ogImage: "/dashboard-dark.png",
   description:
-    "Команда Altai AI: веб-приложения, мобильные приложения, Telegram-боты и AI-решения под ключ. Запуск MVP за 2–4 недели.",
+    "Altai AI: веб-приложения, мобильные приложения, Telegram-боты и AI-решения под ключ. Запускаем MVP за 2–4 недели.",
   links: {
     twitter: "",
     github: "https://github.com/Bolatbekermekov/Altai-Ai",
