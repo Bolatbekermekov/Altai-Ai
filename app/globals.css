@@ -3,6 +3,12 @@
 
 @import "tw-animate-css";
 
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
