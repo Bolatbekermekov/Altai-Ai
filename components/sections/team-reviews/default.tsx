@@ -44,22 +44,22 @@ const useIsMobile = () => {
 const team: TeamMember[] = [
   {
     name: "Bolatbek Yermekov",
-    role: "Основатель",
+    role: "Founder & CEO",
     avatar: "/team-members/Bolatbek_Yeremkov.png",
   },
   {
     name: "Ramazan Seiitbek",
-    role: "Разработчик",
+    role: "AI/ML Engineer",
     avatar: "/team-members/Ramazan_Seiitbek.png",
   },
   {
     name: "Diar Begisbyaev",
-    role: "CEO",
+    role: "CTO",
     avatar: "/team-members/Diar_Begisbyaev.png",
   },
   {
     name: "Ilya Shelestov",
-    role: "Разработчик",
+    role: "Software Engineer",
     avatar: "/team-members/Ilya_Shelestov.png",
   },
 ];
