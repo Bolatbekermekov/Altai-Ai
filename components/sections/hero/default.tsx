@@ -32,16 +32,7 @@ interface HeroProps {
 export default function Hero({
   title = "Создадим цифровое решение для вашего бизнеса",
   description = "Разрабатываем веб-приложения, мобильные приложения, Telegram боты и AI решения. Современный код, быстрая разработка, результат за 2-4 недели.",
-  mockup = (
-    <Screenshot
-      srcLight="/dashboard-light.png"
-      srcDark="/dashboard-dark.png"
-      alt="Altai AI - современное веб-приложение"
-      width={1248}
-      height={765}
-      className="w-full"
-    />
-  ),
+  mockup,
   badge = (
     <Badge variant="outline" className="animate-appear">
       <span className="text-muted-foreground">
@@ -70,6 +61,20 @@ export default function Hero({
   ],
   className,
 }: HeroProps) {
+  const resolvedMockup =
+    mockup === false
+      ? false
+      : mockup || (
+          <Screenshot
+            srcLight="/dashboard-light.png"
+            srcDark="/dashboard-dark.png"
+            alt="Altai AI - современное веб-приложение"
+            width={1248}
+            height={765}
+            className="w-full"
+          />
+        );
+
   return (
     <Section
       id="hero"
@@ -126,7 +131,7 @@ export default function Hero({
             </div>
           )}
 
-          {mockup !== false && (
+          {resolvedMockup !== false && (
             <div className="relative w-full pt-12">
               <MockupFrame
                 className="animate-appear opacity-0 delay-700"
@@ -136,7 +141,7 @@ export default function Hero({
                   type="responsive"
                   className="bg-background/90 w-full rounded-xl border-0"
                 >
-                  {mockup}
+                  {resolvedMockup}
                 </Mockup>
               </MockupFrame>
               <Glow
