@@ -1,3 +1,4 @@
+// components/ui/footer.tsx
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
@@ -17,7 +18,7 @@ function FooterContent({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="footer-content"
       className={cn(
-        "grid grid-cols-2 gap-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5",
+        "grid grid-cols-1 gap-0 md:grid-cols-4 md:gap-8 lg:grid-cols-5",
         className,
       )}
       {...props}
@@ -29,7 +30,7 @@ function FooterColumn({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="footer-column"
-      className={cn("flex flex-col gap-4", className)}
+      className={cn("flex flex-col gap-3", className)}
       {...props}
     />
   );
@@ -40,7 +41,7 @@ function FooterBottom({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="footer-bottom"
       className={cn(
-        "border-border dark:border-border/15 text-muted-foreground mt-8 flex flex-col items-center justify-between gap-4 border-t pt-4 text-xs sm:flex-row",
+        "border-border dark:border-border/15 text-muted-foreground mt-8 flex flex-col items-start justify-between gap-4 border-t pt-6 text-xs sm:flex-row sm:items-center",
         className,
       )}
       {...props}

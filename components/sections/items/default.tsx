@@ -1,9 +1,9 @@
 "use client";
 
-import { motion, type Variants } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import gsap from "gsap";
 import { ArrowUpRight, BarChart3, Clock, DollarSign, Zap } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface BenefitItem {
   title: string;
@@ -12,38 +12,55 @@ interface BenefitItem {
   stat?: string;
 }
 
+// Hook для определения мобильного устройства
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  return isMobile;
+};
+
 const benefits: BenefitItem[] = [
   {
     title: "Рост продуктивности",
     description:
       "Получайте практичные инсайты на основе AI-аналитики, чтобы быстрее принимать решения.",
-    icon: <Zap className="size-6" />,
+    icon: <Zap className="size-5 md:size-6" />,
     stat: "+45%",
   },
   {
     title: "Доступность 24/7",
     description:
       "AI-системы работают круглосуточно и обеспечивают поддержку без простоев.",
-    icon: <Clock className="size-6" />,
+    icon: <Clock className="size-5 md:size-6" />,
     stat: "24/7",
   },
   {
     title: "Снижение затрат",
     description:
       "Автоматизация сокращает ручные задачи, снижает операционные расходы и оптимизирует ресурсы.",
-    icon: <DollarSign className="size-6" />,
+    icon: <DollarSign className="size-5 md:size-6" />,
     stat: "-30%",
   },
   {
     title: "Аналитика на данных",
     description:
       "Используйте AI для анализа больших данных, поиска трендов и точных бизнес-решений.",
-    icon: <BarChart3 className="size-6" />,
+    icon: <BarChart3 className="size-5 md:size-6" />,
     stat: "100%",
   },
 ];
 
-// Benefit Card Component - IMPROVED
+// Benefit Card Component - оптимизирован для мобильных
 const BenefitCard = ({
   benefit,
   index,
@@ -57,24 +74,29 @@ const BenefitCard = ({
   const arrowRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const statRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
+    // Отключаем сложные hover анимации на мобильных и при prefersReducedMotion
+    if (isMobile || prefersReducedMotion) return;
+
     const ctx = gsap.context(() => {
       const card = cardRef.current;
       if (card) {
         card.addEventListener("mouseenter", () => {
           // Icon background expand
           gsap.to(iconBgRef.current, {
-            scale: 1.15,
-            duration: 0.4,
-            ease: "back.out(1.7)",
+            scale: 1.1,
+            duration: 0.3,
+            ease: "back.out(1.5)",
           });
 
           // Icon rotate
           gsap.to(iconRef.current, {
-            rotation: 15,
-            scale: 1.1,
-            duration: 0.3,
+            rotation: 10,
+            scale: 1.05,
+            duration: 0.25,
             ease: "power2.out",
           });
 
@@ -82,37 +104,37 @@ const BenefitCard = ({
           gsap.to(arrowRef.current, {
             x: 0,
             opacity: 1,
-            duration: 0.3,
+            duration: 0.25,
             ease: "power2.out",
           });
 
           // Glow effect
           gsap.to(glowRef.current, {
-            opacity: 0.6,
-            scale: 1.2,
-            duration: 0.4,
+            opacity: 0.5,
+            scale: 1.15,
+            duration: 0.3,
             ease: "power2.out",
           });
 
           // Stat pulse
           gsap.to(statRef.current, {
-            scale: 1.1,
-            duration: 0.3,
-            ease: "back.out(2)",
+            scale: 1.08,
+            duration: 0.25,
+            ease: "back.out(1.7)",
           });
         });
 
         card.addEventListener("mouseleave", () => {
           gsap.to(iconBgRef.current, {
             scale: 1,
-            duration: 0.3,
+            duration: 0.25,
             ease: "power2.out",
           });
 
           gsap.to(iconRef.current, {
             rotation: 0,
             scale: 1,
-            duration: 0.3,
+            duration: 0.25,
             ease: "power2.out",
           });
 
@@ -126,7 +148,7 @@ const BenefitCard = ({
           gsap.to(glowRef.current, {
             opacity: 0,
             scale: 1,
-            duration: 0.3,
+            duration: 0.25,
             ease: "power2.in",
           });
 
@@ -140,31 +162,33 @@ const BenefitCard = ({
     }, cardRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isMobile, prefersReducedMotion]);
 
   return (
     <motion.div
       ref={cardRef}
-      initial={{ opacity: 0, x: -30 }}
+      initial={{ opacity: 0, x: -20 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{
-        duration: 0.6,
-        delay: index * 0.1,
+        duration: 0.5,
+        delay: index * 0.08,
         ease: [0.22, 1, 0.36, 1],
       }}
       className="group relative cursor-pointer"
     >
-      {/* Glow effect background */}
-      <div
-        ref={glowRef}
-        className="from-brand/20 via-brand-foreground/10 absolute inset-0 -z-10 rounded-xl bg-gradient-to-r to-transparent opacity-0 blur-xl"
-      />
+      {/* Glow effect background - отключен на мобильных для производительности */}
+      {!isMobile && (
+        <div
+          ref={glowRef}
+          className="from-brand/20 via-brand-foreground/10 absolute inset-0 -z-10 rounded-lg bg-gradient-to-r to-transparent opacity-0 blur-xl md:rounded-xl"
+        />
+      )}
 
       {/* Card */}
-      <div className="border-border/50 hover:border-brand/50 bg-background/50 relative flex items-start gap-6 overflow-hidden rounded-xl border p-6 backdrop-blur-sm transition-all duration-300">
+      <div className="border-border/50 hover:border-brand/50 bg-background/50 relative flex items-start gap-4 overflow-hidden rounded-lg border p-4 backdrop-blur-sm transition-all duration-300 md:gap-6 md:rounded-xl md:p-6">
         {/* Number badge */}
-        <div className="text-muted-foreground/40 absolute top-4 right-4 font-mono text-[10px]">
+        <div className="text-muted-foreground/40 absolute top-3 right-3 font-mono text-[9px] md:top-4 md:right-4 md:text-[10px]">
           0{index + 1}
         </div>
 
@@ -172,7 +196,7 @@ const BenefitCard = ({
         <div className="relative shrink-0">
           <div
             ref={iconBgRef}
-            className="relative flex size-14 items-center justify-center overflow-hidden rounded-xl"
+            className="relative flex size-12 items-center justify-center overflow-hidden rounded-lg md:size-14 md:rounded-xl"
             style={{
               background:
                 "linear-gradient(135deg, rgba(var(--brand-rgb), 0.1) 0%, rgba(var(--brand-rgb), 0.05) 100%)",
@@ -183,15 +207,17 @@ const BenefitCard = ({
               {benefit.icon}
             </div>
 
-            {/* Rotating border effect */}
-            <div className="border-brand/20 absolute inset-0 rounded-xl border-2 opacity-0 transition-opacity group-hover:opacity-100" />
+            {/* Rotating border effect - только на десктопе */}
+            {!isMobile && (
+              <div className="border-brand/20 absolute inset-0 rounded-lg border-2 opacity-0 transition-opacity group-hover:opacity-100 md:rounded-xl" />
+            )}
           </div>
 
           {/* Stat badge */}
           {benefit.stat && (
             <div
               ref={statRef}
-              className="glass-4 text-brand border-brand/20 absolute -right-2 -bottom-2 rounded-full border px-2 py-0.5 text-[10px] font-bold"
+              className="glass-4 text-brand border-brand/20 absolute -right-1.5 -bottom-1.5 rounded-full border px-1.5 py-0.5 text-[9px] font-bold md:-right-2 md:-bottom-2 md:px-2 md:text-[10px]"
             >
               {benefit.stat}
             </div>
@@ -199,32 +225,34 @@ const BenefitCard = ({
         </div>
 
         {/* Content */}
-        <div className="flex-1 space-y-2 pt-1">
-          <div className="flex items-center gap-2">
-            <h3 className="text-foreground group-hover:text-brand text-lg font-semibold transition-colors">
+        <div className="flex-1 space-y-1.5 pt-0.5 md:space-y-2 md:pt-1">
+          <div className="flex items-center gap-1.5 md:gap-2">
+            <h3 className="text-foreground group-hover:text-brand text-base font-semibold transition-colors md:text-lg">
               {benefit.title}
             </h3>
 
-            {/* Arrow indicator */}
-            <div ref={arrowRef} className="-translate-x-2 opacity-0">
-              <ArrowUpRight className="text-brand size-4" />
-            </div>
+            {/* Arrow indicator - только на десктопе */}
+            {!isMobile && (
+              <div ref={arrowRef} className="-translate-x-2 opacity-0">
+                <ArrowUpRight className="text-brand size-4" />
+              </div>
+            )}
           </div>
 
-          <p className="text-muted-foreground text-sm leading-relaxed">
+          <p className="text-muted-foreground text-xs leading-relaxed md:text-sm">
             {benefit.description}
           </p>
 
           {/* Progress bar indicator */}
-          <div className="relative pt-2">
-            <div className="bg-muted/30 h-1 w-full overflow-hidden rounded-full">
+          <div className="relative pt-1.5 md:pt-2">
+            <div className="bg-muted/30 h-0.5 w-full overflow-hidden rounded-full md:h-1">
               <motion.div
                 initial={{ width: 0 }}
                 whileInView={{ width: "100%" }}
                 viewport={{ once: true }}
                 transition={{
-                  duration: 1,
-                  delay: index * 0.1 + 0.3,
+                  duration: 0.8,
+                  delay: index * 0.08 + 0.2,
                   ease: "easeOut",
                 }}
                 className="from-brand to-brand-foreground h-full rounded-full bg-gradient-to-r"
@@ -242,17 +270,20 @@ const containerVariants: Variants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.3,
+      staggerChildren: 0.08,
+      delayChildren: 0.2,
     },
   },
 };
 
 export default function Items() {
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
-    if (!titleRef.current) return;
+    // Отключаем анимацию текста на мобильных и при prefersReducedMotion
+    if (!titleRef.current || isMobile || prefersReducedMotion) return;
 
     gsap.fromTo(
       titleRef.current,
@@ -261,21 +292,24 @@ export default function Items() {
       },
       {
         backgroundPosition: "100% 50%",
-        duration: 3,
+        duration: 4,
         ease: "none",
         repeat: -1,
         yoyo: true,
       },
     );
-  }, []);
+  }, [isMobile, prefersReducedMotion]);
 
   return (
-    <section id="benefits" className="relative overflow-hidden px-4 py-24">
+    <section
+      id="benefits"
+      className="relative overflow-hidden px-4 py-12 md:py-24"
+    >
       {/* Animated background gradient */}
       <div className="from-background via-muted/10 to-background pointer-events-none absolute inset-0 bg-gradient-to-b" />
 
-      {/* Radial gradient spotlight */}
-      <div className="bg-gradient-radial from-brand/5 pointer-events-none absolute top-1/2 left-1/2 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 via-transparent to-transparent blur-3xl" />
+      {/* Radial gradient spotlight - уменьшен на мобильных */}
+      <div className="bg-gradient-radial from-brand/5 pointer-events-none absolute top-1/2 left-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 via-transparent to-transparent blur-2xl md:h-[800px] md:w-[800px] md:blur-3xl" />
 
       <div className="max-w-container relative z-10 mx-auto">
         {/* Header */}
@@ -283,56 +317,46 @@ export default function Items() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="mb-16 space-y-6 text-center"
+          transition={{ duration: 0.6 }}
+          className="mb-10 space-y-4 text-center md:mb-16 md:space-y-6"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.4 }}
             className="inline-block"
           >
-            <span className="glass-4 from-foreground to-brand rounded-full bg-linear-to-r bg-clip-text px-4 py-2 text-sm font-medium text-transparent">
+            <span className="glass-4 from-foreground to-brand rounded-full bg-linear-to-r bg-clip-text px-3 py-1.5 text-xs font-medium text-transparent md:px-4 md:py-2 md:text-sm">
               Почему мы
             </span>
           </motion.div>
 
           <h2
             ref={titleRef}
-            className="from-foreground to-foreground dark:to-brand mx-auto max-w-4xl bg-linear-to-r bg-clip-text text-4xl leading-tight font-bold text-transparent drop-shadow-[2px_1px_24px_var(--brand-foreground)] transition-all duration-300 md:text-5xl lg:text-6xl"
+            className="from-foreground to-foreground dark:to-brand mx-auto max-w-4xl bg-linear-to-r bg-clip-text text-3xl leading-tight font-bold text-transparent transition-all duration-300 md:text-4xl lg:text-5xl xl:text-6xl"
             style={{
               backgroundSize: "200% 100%",
+              filter: isMobile
+                ? "none"
+                : "drop-shadow(2px 1px 24px var(--brand-foreground))",
             }}
           >
             Преобразуйте бизнес с Altai.ai
           </h2>
 
-          <p className="text-muted-foreground mx-auto max-w-3xl text-lg font-semibold md:text-xl">
+          <p className="text-muted-foreground mx-auto max-w-3xl text-base font-semibold md:text-lg lg:text-xl">
             Современные AI-решения, которые дают измеримый результат
           </p>
         </motion.div>
 
-        {/* Benefits List */}
+        {/* Benefits List - ОДНА ВЕРСИЯ без дублирования */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="mx-auto max-w-4xl space-y-4"
-        >
-          {benefits.map((benefit, index) => (
-            <BenefitCard key={benefit.title} benefit={benefit} index={index} />
-          ))}
-        </motion.div>
-
-        {/* Benefits List */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="mx-auto max-w-4xl space-y-4"
+          viewport={{ once: true, margin: "-50px" }}
+          className="mx-auto max-w-4xl space-y-3 md:space-y-4"
         >
           {benefits.map((benefit, index) => (
             <BenefitCard key={benefit.title} benefit={benefit} index={index} />

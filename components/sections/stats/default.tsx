@@ -1,5 +1,3 @@
-import { siteConfig } from "@/config/site";
-
 import { Section } from "../../ui/section";
 
 interface StatItemProps {
@@ -17,26 +15,25 @@ interface StatsProps {
 export default function Stats({
   items = [
     {
-      label: "используют",
-      value: Math.round(siteConfig.stats.figma / 100) / 10,
-      suffix: "к",
-      description: "дизайнеров в Figma Community",
+      label: "клиентов",
+      value: 4,
+      description: "первые коммерческие проекты и референсы",
     },
     {
-      label: "более",
-      value: siteConfig.stats.github,
-      description: "клонирований и форков шаблона на GitHub",
+      label: "запуска",
+      value: 5,
+      description: "лендинги, боты, CRM и мобильные MVP",
     },
     {
-      label: "уже",
-      value: Math.round(siteConfig.stats.cli / 100) / 10,
-      suffix: "к",
-      description: "установок через shadcn/ui CLI",
+      label: "срок MVP",
+      value: "2–4",
+      suffix: " нед.",
+      description: "от брифа до первой версии",
     },
     {
-      label: "включает",
-      value: siteConfig.stats.sections,
-      description: "блоков и секций",
+      label: "оценка",
+      value: "5/5",
+      description: "по текущим отзывам",
     },
   ],
   className,

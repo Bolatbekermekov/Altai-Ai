@@ -41,23 +41,28 @@ const EcommerceDemo = () => {
   useEffect(() => {
     if (!containerRef.current) return;
 
+    // Проверка на мобильное устройство для оптимизации
+    const isMobile = window.innerWidth < 768;
+
     const ctx = gsap.context(() => {
       // Product card slide in
       gsap.from(cartRef.current, {
         x: -50,
         opacity: 0,
-        duration: 0.8,
+        duration: isMobile ? 0.5 : 0.8,
         ease: "power3.out",
       });
 
-      // Price pulse
-      gsap.to(priceRef.current, {
-        scale: 1.1,
-        duration: 0.6,
-        ease: "power1.inOut",
-        repeat: -1,
-        yoyo: true,
-      });
+      // Price pulse (отключено на мобильных)
+      if (!isMobile) {
+        gsap.to(priceRef.current, {
+          scale: 1.1,
+          duration: 0.6,
+          ease: "power1.inOut",
+          repeat: -1,
+          yoyo: true,
+        });
+      }
 
       // Checkout button hover effect
       gsap.to(checkoutRef.current, {
@@ -75,34 +80,39 @@ const EcommerceDemo = () => {
   return (
     <div
       ref={containerRef}
-      className="from-background/50 to-muted/30 border-border/50 relative h-48 w-full overflow-hidden rounded-lg border bg-gradient-to-br p-4"
+      className="from-background/50 to-muted/30 border-border/50 relative h-40 w-full overflow-hidden rounded-lg border bg-gradient-to-br p-3 sm:h-48 sm:p-4"
     >
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         {/* Product Card */}
         <div
           ref={cartRef}
-          className="glass-3 flex items-center gap-3 rounded-lg p-3"
+          className="glass-3 flex items-center gap-2 rounded-lg p-2 sm:gap-3 sm:p-3"
         >
-          <div className="bg-brand/20 flex size-12 items-center justify-center rounded">
-            <ShoppingCart className="text-brand size-6" />
+          <div className="bg-brand/20 flex size-10 shrink-0 items-center justify-center rounded sm:size-12">
+            <ShoppingCart className="text-brand size-5 sm:size-6" />
           </div>
-          <div className="flex-1">
-            <div className="bg-foreground/20 mb-1.5 h-2 w-24 rounded" />
-            <div className="bg-foreground/10 h-2 w-16 rounded" />
+          <div className="min-w-0 flex-1">
+            <div className="bg-foreground/20 mb-1 h-2 w-20 rounded sm:mb-1.5 sm:w-24" />
+            <div className="bg-foreground/10 h-1.5 w-12 rounded sm:h-2 sm:w-16" />
           </div>
-          <div ref={priceRef} className="text-brand text-sm font-bold">
+          <div
+            ref={priceRef}
+            className="text-brand text-sm font-bold sm:text-base"
+          >
             $99
           </div>
         </div>
 
         {/* Cart Button */}
-        <div className="glass-4 flex items-center justify-between rounded-lg p-3">
-          <div className="flex items-center gap-2">
-            <CreditCard className="text-brand size-5" />
-            <span className="text-sm font-medium">Оформить заказ</span>
+        <div className="glass-4 flex items-center justify-between rounded-lg p-2 sm:p-3">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <CreditCard className="text-brand size-4 sm:size-5" />
+            <span className="text-xs font-medium sm:text-sm">
+              Оформить заказ
+            </span>
           </div>
           <div ref={checkoutRef}>
-            <ArrowRight className="text-muted-foreground size-4" />
+            <ArrowRight className="text-muted-foreground size-3.5 sm:size-4" />
           </div>
         </div>
       </div>
@@ -111,7 +121,7 @@ const EcommerceDemo = () => {
       <motion.div
         animate={{ y: [0, -10, 0] }}
         transition={{ duration: 3, repeat: Infinity }}
-        className="bg-brand/10 absolute -top-2 -right-2 size-16 rounded-full blur-xl"
+        className="bg-brand/10 absolute -top-2 -right-2 size-12 rounded-full blur-xl sm:size-16"
       />
     </div>
   );
@@ -126,10 +136,12 @@ const MobileDemo = () => {
   useEffect(() => {
     if (!phoneRef.current) return;
 
+    const isMobile = window.innerWidth < 768;
+
     const ctx = gsap.context(() => {
-      // Phone float animation
+      // Phone float animation (упрощено на мобильных)
       gsap.to(phoneRef.current, {
-        y: -10,
+        y: isMobile ? -5 : -10,
         duration: 2,
         ease: "power1.inOut",
         repeat: -1,
@@ -153,7 +165,7 @@ const MobileDemo = () => {
             { scaleX: 0.3 },
             {
               scaleX: 1,
-              yoyo: true, // это создаст эффект 0.3 → 1 → 0.3
+              yoyo: true,
               repeat: -1,
               duration: 1.5,
               ease: "power1.inOut",
@@ -168,44 +180,44 @@ const MobileDemo = () => {
   }, []);
 
   return (
-    <div className="relative flex h-48 w-full items-center justify-center">
+    <div className="relative flex h-40 w-full items-center justify-center sm:h-48">
       {/* Phone mockup */}
       <div
         ref={phoneRef}
-        className="border-foreground/20 from-background to-muted/50 relative h-44 w-32 rounded-2xl border-4 bg-gradient-to-b p-2 shadow-xl"
+        className="border-foreground/20 from-background to-muted/50 relative h-36 w-28 rounded-2xl border-4 bg-gradient-to-b p-2 shadow-xl sm:h-44 sm:w-32"
       >
         {/* Notch */}
-        <div className="bg-foreground/20 absolute top-0 left-1/2 h-4 w-16 -translate-x-1/2 rounded-b-xl" />
+        <div className="bg-foreground/20 absolute top-0 left-1/2 h-3 w-14 -translate-x-1/2 rounded-b-xl sm:h-4 sm:w-16" />
 
         {/* Screen content */}
-        <div ref={screenRef} className="mt-4 space-y-2">
-          <div className="bg-brand/20 flex h-8 items-center justify-center rounded">
-            <Laptop className="text-brand size-4" />
+        <div ref={screenRef} className="mt-3 space-y-1.5 sm:mt-4 sm:space-y-2">
+          <div className="bg-brand/20 flex h-6 items-center justify-center rounded sm:h-8">
+            <Laptop className="text-brand size-3 sm:size-4" />
           </div>
-          <div className="space-y-1.5">
+          <div className="space-y-1 sm:space-y-1.5">
             <div
               ref={(el) => {
                 barsRef.current[0] = el;
               }}
-              className="bg-foreground/10 h-1.5 w-full origin-left rounded"
+              className="bg-foreground/10 h-1 w-full origin-left rounded sm:h-1.5"
             />
             <div
               ref={(el) => {
                 barsRef.current[1] = el;
               }}
-              className="bg-foreground/10 h-1.5 w-3/4 origin-left rounded"
+              className="bg-foreground/10 h-1 w-3/4 origin-left rounded sm:h-1.5"
             />
             <div
               ref={(el) => {
                 barsRef.current[2] = el;
               }}
-              className="bg-foreground/10 h-1.5 w-1/2 origin-left rounded"
+              className="bg-foreground/10 h-1 w-1/2 origin-left rounded sm:h-1.5"
             />
           </div>
         </div>
 
         {/* Bottom indicator */}
-        <div className="bg-foreground/30 absolute bottom-1 left-1/2 h-1 w-12 -translate-x-1/2 rounded-full" />
+        <div className="bg-foreground/30 absolute bottom-1 left-1/2 h-0.5 w-10 -translate-x-1/2 rounded-full sm:h-1 sm:w-12" />
       </div>
 
       {/* Glow */}
@@ -223,6 +235,8 @@ const CRMDemo = () => {
   useEffect(() => {
     if (!containerRef.current) return;
 
+    const isMobile = window.innerWidth < 768;
+
     const ctx = gsap.context(() => {
       // Stats cards bounce in
       statsRef.current.forEach((stat, i) => {
@@ -230,7 +244,7 @@ const CRMDemo = () => {
           gsap.from(stat, {
             scale: 0,
             opacity: 0,
-            duration: 0.6,
+            duration: isMobile ? 0.4 : 0.6,
             ease: "back.out(1.7)",
             delay: i * 0.2,
           });
@@ -245,7 +259,7 @@ const CRMDemo = () => {
             { scaleY: 0 },
             {
               scaleY: 1,
-              duration: 0.8,
+              duration: isMobile ? 0.5 : 0.8,
               ease: "elastic.out(1, 0.5)",
               delay: i * 0.1,
             },
@@ -260,42 +274,50 @@ const CRMDemo = () => {
   return (
     <div
       ref={containerRef}
-      className="from-background/50 to-muted/30 border-border/50 relative h-48 w-full overflow-hidden rounded-lg border bg-gradient-to-br p-4"
+      className="from-background/50 to-muted/30 border-border/50 relative h-40 w-full overflow-hidden rounded-lg border bg-gradient-to-br p-3 sm:h-48 sm:p-4"
     >
-      <div className="space-y-2">
+      <div className="space-y-1.5 sm:space-y-2">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Users className="text-brand size-5" />
-            <span className="text-sm font-medium">Панель</span>
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <Users className="text-brand size-4 sm:size-5" />
+            <span className="text-xs font-medium sm:text-sm">Панель</span>
           </div>
-          <TrendingUp className="size-4 text-green-500" />
+          <TrendingUp className="size-3.5 text-green-500 sm:size-4" />
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
           <div
             ref={(el) => {
               statsRef.current[0] = el;
             }}
-            className="glass-3 rounded p-2"
+            className="glass-3 rounded p-1.5 sm:p-2"
           >
-            <div className="text-muted-foreground text-xs">Пользователи</div>
-            <div className="text-brand text-lg font-bold">1,2K</div>
+            <div className="text-muted-foreground text-[10px] sm:text-xs">
+              Пользователи
+            </div>
+            <div className="text-brand text-base font-bold sm:text-lg">
+              1,2K
+            </div>
           </div>
           <div
             ref={(el) => {
               statsRef.current[1] = el;
             }}
-            className="glass-3 rounded p-2"
+            className="glass-3 rounded p-1.5 sm:p-2"
           >
-            <div className="text-muted-foreground text-xs">Выручка</div>
-            <div className="text-brand text-lg font-bold">$45K</div>
+            <div className="text-muted-foreground text-[10px] sm:text-xs">
+              Выручка
+            </div>
+            <div className="text-brand text-base font-bold sm:text-lg">
+              $45K
+            </div>
           </div>
         </div>
 
         {/* Chart simulation */}
-        <div className="flex h-16 items-end gap-1">
+        <div className="flex h-12 items-end gap-0.5 sm:h-16 sm:gap-1">
           {[40, 70, 45, 80, 60, 90, 75].map((height, i) => (
             <div
               key={i}
@@ -323,10 +345,12 @@ const ChatbotDemo = () => {
   useEffect(() => {
     if (!containerRef.current) return;
 
+    const isMobile = window.innerWidth < 768;
+
     const ctx = gsap.context(() => {
       // User message slides in from right
       gsap.from(userMsgRef.current, {
-        x: 50,
+        x: isMobile ? 30 : 50,
         opacity: 0,
         duration: 0.5,
         ease: "power2.out",
@@ -334,7 +358,7 @@ const ChatbotDemo = () => {
 
       // Bot message slides in from left with delay
       gsap.from(botMsgRef.current, {
-        x: -50,
+        x: isMobile ? -30 : -50,
         opacity: 0,
         duration: 0.5,
         ease: "power2.out",
@@ -371,65 +395,71 @@ const ChatbotDemo = () => {
   return (
     <div
       ref={containerRef}
-      className="from-background/80 to-muted/50 border-border/50 relative h-48 w-full overflow-hidden rounded-lg border bg-gradient-to-br p-3"
+      className="from-background/80 to-muted/50 border-border/50 relative h-40 w-full overflow-hidden rounded-lg border bg-gradient-to-br p-2.5 sm:h-48 sm:p-3"
     >
-      <div className="space-y-2">
+      <div className="space-y-1.5 sm:space-y-2">
         {/* Header */}
-        <div className="border-border/30 flex items-center gap-2 border-b pb-2">
-          <div className="bg-brand/20 flex size-6 items-center justify-center rounded-full">
-            <Bot className="text-brand size-4" />
+        <div className="border-border/30 flex items-center gap-1.5 border-b pb-1.5 sm:gap-2 sm:pb-2">
+          <div className="bg-brand/20 flex size-5 items-center justify-center rounded-full sm:size-6">
+            <Bot className="text-brand size-3 sm:size-4" />
           </div>
-          <span className="text-xs font-medium">AI-ассистент</span>
-          <div className="ml-auto size-2 rounded-full bg-green-500" />
+          <span className="text-[10px] font-medium sm:text-xs">
+            AI-ассистент
+          </span>
+          <div className="ml-auto size-1.5 rounded-full bg-green-500 sm:size-2" />
         </div>
 
         {/* Messages */}
-        <div className="space-y-2">
+        <div className="space-y-1.5 sm:space-y-2">
           {/* User message */}
           <div className="flex justify-end">
             <div
               ref={userMsgRef}
-              className="glass-3 max-w-[70%] rounded-lg rounded-tr-none px-3 py-1.5"
+              className="glass-3 max-w-[75%] rounded-lg rounded-tr-none px-2 py-1 sm:max-w-[70%] sm:px-3 sm:py-1.5"
             >
-              <p className="text-xs">Запланируй встречу с Джоном</p>
+              <p className="text-[10px] sm:text-xs">
+                Запланируй встречу с Джоном
+              </p>
             </div>
           </div>
 
           {/* Bot response */}
-          <div className="flex gap-2">
-            <div className="bg-brand/10 flex size-6 shrink-0 items-center justify-center rounded-full">
-              <Bot className="text-brand size-3" />
+          <div className="flex gap-1.5 sm:gap-2">
+            <div className="bg-brand/10 flex size-5 shrink-0 items-center justify-center rounded-full sm:size-6">
+              <Bot className="text-brand size-2.5 sm:size-3" />
             </div>
             <div
               ref={botMsgRef}
-              className="glass-4 max-w-[80%] rounded-lg rounded-tl-none px-3 py-1.5"
+              className="glass-4 max-w-[80%] rounded-lg rounded-tl-none px-2 py-1 sm:px-3 sm:py-1.5"
             >
-              <p className="mb-2 text-xs">
+              <p className="mb-1.5 text-[10px] sm:mb-2 sm:text-xs">
                 Я запланировал встречу в Google Meet с Джоном на завтра, 15:45.
               </p>
               <div
                 ref={meetCardRef}
-                className="glass-3 flex items-center gap-2 rounded p-2"
+                className="glass-3 flex items-center gap-1.5 rounded p-1.5 sm:gap-2 sm:p-2"
               >
-                <MessageSquare className="text-brand size-3" />
-                <span className="text-[10px]">Google Meet с Джоном</span>
+                <MessageSquare className="text-brand size-2.5 sm:size-3" />
+                <span className="text-[9px] sm:text-[10px]">
+                  Google Meet с Джоном
+                </span>
               </div>
             </div>
           </div>
 
           {/* Typing indicator */}
-          <div className="flex items-center gap-2">
-            <div className="bg-brand/10 flex size-6 items-center justify-center rounded-full">
-              <Bot className="text-brand size-3" />
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="bg-brand/10 flex size-5 items-center justify-center rounded-full sm:size-6">
+              <Bot className="text-brand size-2.5 sm:size-3" />
             </div>
-            <div className="flex gap-1">
+            <div className="flex gap-0.5 sm:gap-1">
               {[0, 1, 2].map((i) => (
                 <div
                   key={i}
                   ref={(el) => {
                     dotsRef.current[i] = el;
                   }}
-                  className="bg-brand/40 size-1.5 rounded-full"
+                  className="bg-brand/40 size-1 rounded-full sm:size-1.5"
                 />
               ))}
             </div>
@@ -451,23 +481,27 @@ const SaaSDemo = () => {
   useEffect(() => {
     if (!containerRef.current) return;
 
+    const isMobile = window.innerWidth < 768;
+
     const ctx = gsap.context(() => {
       // MRR card scale in
       gsap.from(mrrRef.current, {
         scale: 0.8,
         opacity: 0,
-        duration: 0.6,
+        duration: isMobile ? 0.4 : 0.6,
         ease: "back.out(1.7)",
       });
 
-      // Trend arrow bounce
-      gsap.to(trendRef.current, {
-        y: -3,
-        duration: 0.5,
-        ease: "power1.inOut",
-        repeat: -1,
-        yoyo: true,
-      });
+      // Trend arrow bounce (отключено на мобильных)
+      if (!isMobile) {
+        gsap.to(trendRef.current, {
+          y: -3,
+          duration: 0.5,
+          ease: "power1.inOut",
+          repeat: -1,
+          yoyo: true,
+        });
+      }
 
       // Metrics slide in
       metricsRef.current.forEach((metric, i) => {
@@ -502,71 +536,80 @@ const SaaSDemo = () => {
   return (
     <div
       ref={containerRef}
-      className="from-background/50 to-muted/30 border-border/50 relative h-48 w-full overflow-hidden rounded-lg border bg-gradient-to-br p-4"
+      className="from-background/50 to-muted/30 border-border/50 relative h-40 w-full overflow-hidden rounded-lg border bg-gradient-to-br p-3 sm:h-48 sm:p-4"
     >
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Zap className="text-brand size-5" />
-            <span className="text-sm font-medium">Метрики SaaS</span>
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <Zap className="text-brand size-4 sm:size-5" />
+            <span className="text-xs font-medium sm:text-sm">Метрики SaaS</span>
           </div>
         </div>
 
         {/* Metrics */}
-        <div className="space-y-2">
+        <div className="space-y-1.5 sm:space-y-2">
           <div
             ref={mrrRef}
-            className="glass-3 flex items-center justify-between rounded-lg p-2.5"
+            className="glass-3 flex items-center justify-between rounded-lg p-2 sm:p-2.5"
           >
             <div>
-              <div className="text-muted-foreground text-xs">MRR</div>
-              <div className="text-brand text-lg font-bold">$24.5K</div>
+              <div className="text-muted-foreground text-[10px] sm:text-xs">
+                MRR
+              </div>
+              <div className="text-brand text-base font-bold sm:text-lg">
+                $24.5K
+              </div>
             </div>
             <div
               ref={trendRef}
-              className="flex items-center gap-1 text-xs font-medium text-green-500"
+              className="flex items-center gap-0.5 text-[10px] font-medium text-green-500 sm:gap-1 sm:text-xs"
             >
-              <TrendingUp className="size-3" />
+              <TrendingUp className="size-2.5 sm:size-3" />
               +12%
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
             <div
               ref={(el) => {
                 metricsRef.current[0] = el;
               }}
-              className="glass-3 rounded p-2"
+              className="glass-3 rounded p-1.5 sm:p-2"
             >
-              <div className="text-muted-foreground text-[10px]">
+              <div className="text-muted-foreground text-[9px] sm:text-[10px]">
                 Активные пользователи
               </div>
-              <div className="text-sm font-bold">845</div>
+              <div className="text-xs font-bold sm:text-sm">845</div>
             </div>
             <div
               ref={(el) => {
                 metricsRef.current[1] = el;
               }}
-              className="glass-3 rounded p-2"
+              className="glass-3 rounded p-1.5 sm:p-2"
             >
-              <div className="text-muted-foreground text-[10px]">
+              <div className="text-muted-foreground text-[9px] sm:text-[10px]">
                 Отток
               </div>
-              <div className="text-sm font-bold text-green-500">2.3%</div>
+              <div className="text-xs font-bold text-green-500 sm:text-sm">
+                2.3%
+              </div>
             </div>
           </div>
 
           {/* Features */}
-          <div className="space-y-1.5 pt-1">
+          <div className="space-y-1 pt-0.5 sm:space-y-1.5 sm:pt-1">
             {["Автоскейлинг", "Мультиарендность"].map((feature, i) => (
-              <div key={feature} className="flex items-center gap-2 text-xs">
+              <div
+                key={feature}
+                className="flex items-center gap-1.5 text-[10px] sm:gap-2 sm:text-xs"
+              >
                 <div
                   ref={(el) => {
                     checkmarksRef.current[i] = el;
                   }}
                 >
-                  <Check className="text-brand size-3" />
+                  <Check className="text-brand size-2.5 sm:size-3" />
                 </div>
                 <span className="text-muted-foreground">{feature}</span>
               </div>
@@ -589,28 +632,35 @@ const LandingDemo = () => {
   useEffect(() => {
     if (!containerRef.current) return;
 
+    const isMobile = window.innerWidth < 768;
+
     const ctx = gsap.context(() => {
       // Hero section animation
       gsap.fromTo(
         heroRef.current,
         { scale: 0.8, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1, ease: "power3.out" },
+        {
+          scale: 1,
+          opacity: 1,
+          duration: isMobile ? 0.7 : 1,
+          ease: "power3.out",
+        },
       );
 
-      // CTA button pulse
+      // CTA button pulse (упрощено на мобильных)
       gsap.to(ctaRef.current, {
-        scale: 1.05,
+        scale: isMobile ? 1.03 : 1.05,
         duration: 0.8,
         ease: "power1.inOut",
         repeat: -1,
         yoyo: true,
       });
 
-      // Floating elements
+      // Floating elements (уменьшено движение на мобильных)
       elementsRef.current.forEach((el, i) => {
         if (el) {
           gsap.to(el, {
-            y: -15,
+            y: isMobile ? -8 : -15,
             rotation: i % 2 === 0 ? 5 : -5,
             duration: 2 + i * 0.3,
             ease: "power1.inOut",
@@ -645,29 +695,29 @@ const LandingDemo = () => {
   return (
     <div
       ref={containerRef}
-      className="from-background/80 via-muted/50 to-background/80 border-border/50 relative h-48 w-full overflow-hidden rounded-lg border bg-gradient-to-br p-4"
+      className="from-background/80 via-muted/50 to-background/80 border-border/50 relative h-40 w-full overflow-hidden rounded-lg border bg-gradient-to-br p-3 sm:h-48 sm:p-4"
     >
       {/* Browser mockup */}
       <div className="glass-3 flex h-full flex-col overflow-hidden rounded-lg">
         {/* Browser bar */}
-        <div className="border-border/30 flex items-center gap-1.5 border-b px-2 py-1.5">
-          <div className="flex gap-1">
-            <div className="size-2 rounded-full bg-red-500/50" />
-            <div className="size-2 rounded-full bg-yellow-500/50" />
-            <div className="size-2 rounded-full bg-green-500/50" />
+        <div className="border-border/30 flex items-center gap-1 border-b px-1.5 py-1 sm:gap-1.5 sm:px-2 sm:py-1.5">
+          <div className="flex gap-0.5 sm:gap-1">
+            <div className="size-1.5 rounded-full bg-red-500/50 sm:size-2" />
+            <div className="size-1.5 rounded-full bg-yellow-500/50 sm:size-2" />
+            <div className="size-1.5 rounded-full bg-green-500/50 sm:size-2" />
           </div>
-          <div className="glass-2 text-muted-foreground flex flex-1 items-center gap-1 rounded px-2 py-0.5 text-[8px]">
-            <Layout className="size-2" />
+          <div className="glass-2 text-muted-foreground flex flex-1 items-center gap-0.5 rounded px-1.5 py-0.5 text-[7px] sm:gap-1 sm:px-2 sm:text-[8px]">
+            <Layout className="size-1.5 sm:size-2" />
             altai.ai
           </div>
         </div>
 
         {/* Landing content */}
-        <div className="relative flex-1 overflow-hidden p-3">
+        <div className="relative flex-1 overflow-hidden p-2 sm:p-3">
           {/* Hero section */}
-          <div ref={heroRef} className="space-y-2 text-center">
+          <div ref={heroRef} className="space-y-1.5 text-center sm:space-y-2">
             <div className="relative inline-block">
-              <h3 className="from-brand via-brand-foreground to-brand bg-gradient-to-r bg-clip-text text-xs font-bold text-transparent">
+              <h3 className="from-brand via-brand-foreground to-brand bg-gradient-to-r bg-clip-text text-[10px] font-bold text-transparent sm:text-xs">
                 Запускайте быстрее
               </h3>
               {/* Sparkles */}
@@ -677,24 +727,26 @@ const LandingDemo = () => {
                   ref={(el) => {
                     sparklesRef.current[i] = el;
                   }}
-                  className="text-brand absolute -top-1 -right-3 size-3"
+                  className="text-brand absolute -top-0.5 -right-2 size-2 sm:-top-1 sm:-right-3 sm:size-3"
                   style={{ opacity: 0 }}
                 />
               ))}
             </div>
 
-            <div className="space-y-1">
-              <div className="bg-foreground/10 mx-auto h-1 w-20 rounded" />
-              <div className="bg-foreground/5 mx-auto h-1 w-16 rounded" />
+            <div className="space-y-0.5 sm:space-y-1">
+              <div className="bg-foreground/10 mx-auto h-0.5 w-16 rounded sm:h-1 sm:w-20" />
+              <div className="bg-foreground/5 mx-auto h-0.5 w-12 rounded sm:h-1 sm:w-16" />
             </div>
 
             {/* CTA Button */}
             <div
               ref={ctaRef}
-              className="glass-4 mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5"
+              className="glass-4 mt-1.5 inline-flex items-center gap-1 rounded-full px-2.5 py-1 sm:mt-2 sm:gap-1.5 sm:px-3 sm:py-1.5"
             >
-              <Rocket className="text-brand size-3" />
-              <span className="text-[10px] font-medium">Начать</span>
+              <Rocket className="text-brand size-2.5 sm:size-3" />
+              <span className="text-[9px] font-medium sm:text-[10px]">
+                Начать
+              </span>
             </div>
           </div>
 
@@ -703,32 +755,32 @@ const LandingDemo = () => {
             ref={(el) => {
               elementsRef.current[0] = el;
             }}
-            className="glass-3 absolute top-2 right-2 flex size-8 items-center justify-center rounded-lg"
+            className="glass-3 absolute top-1.5 right-1.5 flex size-6 items-center justify-center rounded-lg sm:top-2 sm:right-2 sm:size-8"
           >
-            <Code className="text-brand/50 size-4" />
+            <Code className="text-brand/50 size-3 sm:size-4" />
           </div>
 
           <div
             ref={(el) => {
               elementsRef.current[1] = el;
             }}
-            className="glass-3 absolute bottom-2 left-2 flex size-8 items-center justify-center rounded-lg"
+            className="glass-3 absolute bottom-1.5 left-1.5 flex size-6 items-center justify-center rounded-lg sm:bottom-2 sm:left-2 sm:size-8"
           >
-            <Zap className="text-brand/50 size-4" />
+            <Zap className="text-brand/50 size-3 sm:size-4" />
           </div>
 
           <div
             ref={(el) => {
               elementsRef.current[2] = el;
             }}
-            className="bg-brand/10 absolute top-1/2 left-2 size-6 rounded-full"
+            className="bg-brand/10 absolute top-1/2 left-1.5 size-4 rounded-full sm:left-2 sm:size-6"
           />
 
           <div
             ref={(el) => {
               elementsRef.current[3] = el;
             }}
-            className="bg-brand-foreground/10 absolute top-1/3 right-3 size-4 rounded-full"
+            className="bg-brand-foreground/10 absolute top-1/3 right-2 size-3 rounded-full sm:right-3 sm:size-4"
           />
         </div>
       </div>
@@ -742,7 +794,7 @@ const LandingDemo = () => {
 const services: Service[] = [
   {
     id: "ecommerce",
-    icon: <ShoppingCart className="size-8" />,
+    icon: <ShoppingCart className="size-6 sm:size-8" />,
     title: "Интернет-магазины",
     description:
       "Онлайн-магазины и маркетплейсы с полным циклом разработки от MVP до масштабируемой платформы",
@@ -751,7 +803,7 @@ const services: Service[] = [
   },
   {
     id: "landing",
-    icon: <Layout className="size-8" />,
+    icon: <Layout className="size-6 sm:size-8" />,
     title: "Лендинги",
     description:
       "Конверсионные лендинги с современным дизайном и оптимизацией под высокую конверсию",
@@ -760,7 +812,7 @@ const services: Service[] = [
   },
   {
     id: "mobile",
-    icon: <Laptop className="size-8" />,
+    icon: <Laptop className="size-6 sm:size-8" />,
     title: "Мобильные приложения",
     description:
       "Нативные и кросс-платформенные приложения для iOS и Android с современным UX",
@@ -769,16 +821,20 @@ const services: Service[] = [
   },
   {
     id: "crm",
-    icon: <Code className="size-8" />,
+    icon: <Code className="size-6 sm:size-8" />,
     title: "CRM и SaaS",
     description:
       "Корпоративные системы управления, CRM и SaaS продукты под ключ с интеграциями",
-    features: ["Кастомные процессы", "Интеграции по API", "Облачная архитектура"],
+    features: [
+      "Кастомные процессы",
+      "Интеграции по API",
+      "Облачная архитектура",
+    ],
     demo: <CRMDemo />,
   },
   {
     id: "chatbot",
-    icon: <Bot className="size-8" />,
+    icon: <Bot className="size-6 sm:size-8" />,
     title: "Разработка чат-ботов",
     description:
       "Интеллектуальные чат-боты с AI для автоматизации поддержки и продаж",
@@ -787,7 +843,7 @@ const services: Service[] = [
   },
   {
     id: "saas",
-    icon: <Zap className="size-8" />,
+    icon: <Zap className="size-6 sm:size-8" />,
     title: "SaaS-продукты",
     description:
       "Разработка SaaS решений с подписочной моделью, аналитикой и масштабированием",
@@ -828,7 +884,10 @@ const itemVariants: Variants = {
 
 export default function Services() {
   return (
-    <section id="services" className="relative overflow-hidden px-4 py-24">
+    <section
+      id="services"
+      className="relative overflow-hidden px-4 py-16 sm:py-20 md:py-24"
+    >
       {/* Background gradient */}
       <div className="from-background via-background/50 to-background pointer-events-none absolute inset-0 bg-gradient-to-b" />
 
@@ -842,7 +901,7 @@ export default function Services() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
-          className="mb-16 space-y-4 text-center"
+          className="mb-10 space-y-3 text-center sm:mb-12 sm:space-y-4 md:mb-16"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -851,19 +910,19 @@ export default function Services() {
             transition={{ duration: 0.5 }}
             className="inline-block"
           >
-            <span className="glass-4 text-brand rounded-full px-4 py-2 text-sm font-medium">
+            <span className="glass-4 text-brand rounded-full px-3 py-1.5 text-xs font-medium sm:px-4 sm:py-2 sm:text-sm">
               Наши услуги
             </span>
           </motion.div>
 
-          <h2 className="text-4xl font-bold md:text-5xl lg:text-6xl">
+          <h2 className="text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl">
             Что мы{" "}
             <span className="from-brand via-brand-foreground to-brand bg-gradient-to-r bg-clip-text text-transparent">
               делаем
             </span>
           </h2>
 
-          <p className="text-muted-foreground mx-auto max-w-2xl text-lg md:text-xl">
+          <p className="text-muted-foreground mx-auto max-w-2xl px-4 text-base sm:text-lg md:text-xl">
             Полный цикл разработки от идеи до запуска и поддержки вашего
             продукта
           </p>
@@ -875,7 +934,7 @@ export default function Services() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6"
         >
           {services.map((service) => (
             <motion.div
@@ -890,7 +949,7 @@ export default function Services() {
                   transition: { duration: 0.3 },
                 }}
                 className={cn(
-                  "glass-4 relative h-full overflow-hidden rounded-2xl p-6",
+                  "glass-4 relative h-full overflow-hidden rounded-2xl p-4 sm:p-5 md:p-6",
                   "transition-all duration-300",
                   "hover:glass-5 hover:shadow-2xl",
                 )}
@@ -899,14 +958,14 @@ export default function Services() {
                 <div className="from-brand/20 via-brand-foreground/10 absolute inset-0 bg-gradient-to-br to-transparent opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
 
                 {/* Content */}
-                <div className="relative z-10 space-y-4">
+                <div className="relative z-10 space-y-3 sm:space-y-4">
                   {/* Demo UI */}
-                  <div className="mb-4">{service.demo}</div>
+                  <div className="mb-3 sm:mb-4">{service.demo}</div>
 
                   {/* Icon & Title */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     <motion.div
-                      className="text-brand"
+                      className="text-brand shrink-0"
                       whileHover={{
                         scale: 1.1,
                         rotate: 5,
@@ -915,28 +974,28 @@ export default function Services() {
                     >
                       {service.icon}
                     </motion.div>
-                    <h3 className="text-foreground text-xl font-bold">
+                    <h3 className="text-foreground text-lg font-bold sm:text-xl">
                       {service.title}
                     </h3>
                   </div>
 
                   {/* Description */}
-                  <p className="text-muted-foreground text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-xs leading-relaxed sm:text-sm">
                     {service.description}
                   </p>
 
                   {/* Features */}
                   {service.features && (
-                    <ul className="space-y-2 pt-2">
+                    <ul className="space-y-1.5 pt-1 sm:space-y-2 sm:pt-2">
                       {service.features.map((feature, i) => (
                         <motion.li
                           key={i}
                           initial={{ opacity: 0, x: -10 }}
                           whileInView={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.1 }}
-                          className="text-muted-foreground flex items-center gap-2 text-xs"
+                          className="text-muted-foreground flex items-center gap-1.5 text-[11px] sm:gap-2 sm:text-xs"
                         >
-                          <div className="bg-brand size-1.5 rounded-full" />
+                          <div className="bg-brand size-1 shrink-0 rounded-full sm:size-1.5" />
                           {feature}
                         </motion.li>
                       ))}
