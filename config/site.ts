@@ -1,29 +1,29 @@
 export const siteConfig = {
-  name: "Altai Ai",
-  url: "",
-  getStartedUrl: "",
-  ogImage: "",
+  name: "Altai AI",
+  url: "https://altai-ai.cloud", // обнови, если домен изменится
+  getStartedUrl: "https://wa.me/77757200604",
+  ogImage: "/dashboard-dark.png",
   description:
-    "Готовые секции и компоненты на React, Shadcn/ui и Tailwind, которые помогают быстро запускать премиальные сайты.",
+    "Команда Altai AI: веб-приложения, мобильные приложения, Telegram-боты и AI-решения под ключ. Запуск MVP за 2–4 недели.",
   links: {
     twitter: "",
-    github: "",
-    email: "",
+    github: "https://github.com/Bolatbekermekov/Altai-Ai",
+    email: "ermekbolatbek21@gmail.com",
   },
   pricing: {
     pro: "",
     team: "",
   },
   stats: {
-    figma: 6949,
-    github: 1701,
-    cli: 15972,
-    total: "24.6k+",
-    updated: "4 дек 2025",
-    sections: 74,
-    illustrations: 23,
-    animations: 15,
-    templates: 7,
+    figma: 0,
+    github: 0,
+    cli: 0,
+    total: "4 клиента",
+    updated: "янв 2025",
+    sections: 9,
+    illustrations: 0,
+    animations: 4,
+    templates: 1,
   },
 };
 
