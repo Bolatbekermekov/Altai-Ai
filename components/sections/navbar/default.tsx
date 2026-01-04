@@ -35,11 +35,19 @@ interface NavbarActionProps {
   href?: string;
 }
 
+interface LocalizedNavbarAction {
+  text: string;
+  href?: string;
+  isButton?: boolean;
+}
+
+type NavbarActionInput = NavbarActionProps | LocalizedNavbarAction;
+
 interface NavbarProps {
   logo?: ReactNode;
   name?: string;
   mobileLinks?: NavbarLink[];
-  actions?: NavbarActionProps[];
+  actions?: NavbarActionInput[];
   showNavigation?: boolean;
   customNavigation?: ReactNode;
   className?: string;
@@ -59,7 +67,16 @@ export default function Navbar({
 
   const resolvedName = name || navCopy.brand;
   const resolvedMobileLinks = mobileLinks ?? navCopy.menuItems;
-  const resolvedActions = actions ?? navCopy.actions;
+  const resolvedActions: NavbarActionProps[] = (actions ?? navCopy.actions).map(
+    (action) => ({
+      isButton: action.isButton ?? true,
+      href: action.href,
+      text: action.text,
+      variant: (action as NavbarActionProps).variant || "default",
+      icon: (action as NavbarActionProps).icon,
+      iconRight: (action as NavbarActionProps).iconRight,
+    }),
+  );
   const resolvedNavigation =
     customNavigation || <Navigation menuItems={navCopy.menuItems} />;
 

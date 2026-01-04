@@ -12,12 +12,12 @@ import {
 } from "../../ui/accordion";
 import { Section } from "../../ui/section";
 
-type FAQAnswer =
-  | {
-      paragraphs?: string[];
-      list?: string[];
-    }
-  | ReactNode;
+type FAQAnswerObject = {
+  paragraphs?: string[];
+  list?: string[];
+};
+
+type FAQAnswer = FAQAnswerObject | ReactNode;
 
 interface FAQItemProps {
   question: string;
@@ -35,7 +35,7 @@ export default function FAQ({ title, items, className }: FAQProps) {
   const { t } = useI18n();
   const copy = t.faq;
   const resolvedTitle = title || copy.title;
-  const resolvedItems = items === undefined ? copy.items : items;
+  const resolvedItems = items === undefined ? (copy.items as FAQItemProps[]) : items;
 
   const renderAnswer = (answer: FAQAnswer) => {
     if (answer === null || answer === undefined) return null;
@@ -48,29 +48,32 @@ export default function FAQ({ title, items, className }: FAQProps) {
       );
     }
 
-    if (typeof answer === "object") {
-      return (
-        <Fragment>
-          {answer.paragraphs?.map((paragraph, idx) => (
-            <p
-              key={`p-${idx}`}
-              className="text-muted-foreground mb-2 max-w-full text-sm leading-relaxed md:mb-4 md:max-w-[640px] md:text-base"
-            >
-              {paragraph}
-            </p>
-          ))}
-          {answer.list && (
-            <ul className="text-muted-foreground mb-2 ml-4 max-w-full list-inside list-disc space-y-1 text-sm leading-relaxed md:mb-4 md:max-w-[580px] md:text-base">
-              {answer.list.map((item, idx) => (
-                <li key={`li-${idx}`}>{item}</li>
-              ))}
-            </ul>
-          )}
-        </Fragment>
-      );
+    // If it's iterable (e.g., array of ReactNodes), just render directly
+    if (Symbol.iterator in Object(answer)) {
+      return <Fragment>{answer as Iterable<ReactNode>}</Fragment>;
     }
 
-    return null;
+    const answerObj = answer as FAQAnswerObject;
+
+    return (
+      <Fragment>
+        {answerObj.paragraphs?.map((paragraph, idx) => (
+          <p
+            key={`p-${idx}`}
+            className="text-muted-foreground mb-2 max-w-full text-sm leading-relaxed md:mb-4 md:max-w-[640px] md:text-base"
+          >
+            {paragraph}
+          </p>
+        ))}
+        {answerObj.list && (
+          <ul className="text-muted-foreground mb-2 ml-4 max-w-full list-inside list-disc space-y-1 text-sm leading-relaxed md:mb-4 md:max-w-[580px] md:text-base">
+            {answerObj.list.map((item, idx) => (
+              <li key={`li-${idx}`}>{item}</li>
+            ))}
+          </ul>
+        )}
+      </Fragment>
+    );
   };
 
   return (
