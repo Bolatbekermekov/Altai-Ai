@@ -13,7 +13,7 @@ import TelegramBotCase from "../components/sections/telegram-bot-case/default";
 
 export default function Home() {
   return (
-    <main className="bg-background text-foreground min-h-screen w-full">
+    <main className="bg-background text-foreground min-h-screen w-full pt-20 md:pt-24">
       <Navbar />
       <Hero />
       <Services />

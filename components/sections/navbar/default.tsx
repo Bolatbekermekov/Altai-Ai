@@ -4,10 +4,7 @@ import { type VariantProps } from "class-variance-authority";
 import { Menu } from "lucide-react";
 import { ReactNode } from "react";
 
-import {
-  Language,
-  useI18n,
-} from "@/components/contexts/language-context";
+import { Language, useI18n } from "@/components/contexts/language-context";
 import { cn } from "@/lib/utils";
 
 import LaunchUI from "../../logos/launch-ui";
@@ -77,15 +74,16 @@ export default function Navbar({
       iconRight: (action as NavbarActionProps).iconRight,
     }),
   );
-  const resolvedNavigation =
-    customNavigation || <Navigation menuItems={navCopy.menuItems} />;
+  const resolvedNavigation = customNavigation || (
+    <Navigation menuItems={navCopy.menuItems} />
+  );
 
   const languageOptions: Language[] = ["ru", "en"];
 
   const renderLanguageSwitch = (variant: "desktop" | "mobile" = "desktop") => (
     <div
       className={cn(
-        "glass-3 inline-flex items-center gap-1 rounded-full border border-border/60 p-1 text-xs shadow-sm",
+        "glass-3 border-border/60 inline-flex items-center gap-1 rounded-full border p-1 text-xs shadow-sm",
         variant === "mobile" && "justify-center md:hidden",
         variant === "desktop" && "hidden md:inline-flex",
       )}
@@ -98,7 +96,7 @@ export default function Navbar({
           onClick={() => setLanguage(code)}
           className={cn(
             "rounded-full px-3 py-1 font-semibold transition-colors",
-            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
+            "focus-visible:outline-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2",
             language === code
               ? "bg-foreground text-background shadow-sm"
               : "text-muted-foreground hover:text-foreground",
@@ -113,7 +111,7 @@ export default function Navbar({
   );
 
   return (
-    <header className={cn("sticky top-0 z-50 -mb-4 px-4 pb-4", className)}>
+    <header className={cn("fixed top-0 left-0 right-0 z-50 px-4 pb-4", className)}>
       <div className="fade-bottom bg-background/15 absolute left-0 h-24 w-full backdrop-blur-lg"></div>
       <div className="max-w-container relative mx-auto">
         <NavbarComponent>
@@ -128,13 +126,13 @@ export default function Navbar({
             </a>
           </NavbarLeft>
 
-          <NavbarCenter>
-            {showNavigation && resolvedNavigation}
-          </NavbarCenter>
+          <NavbarCenter>{showNavigation && resolvedNavigation}</NavbarCenter>
 
           <NavbarRight>
             {renderLanguageSwitch("desktop")}
-            <div className="mr-1 md:hidden">{renderLanguageSwitch("mobile")}</div>
+            <div className="mr-1 md:hidden">
+              {renderLanguageSwitch("mobile")}
+            </div>
             {resolvedActions.map((action, index) =>
               action.isButton ? (
                 <Button
@@ -161,7 +159,7 @@ export default function Navbar({
                 <a
                   key={index}
                   href={action.href}
-                  className="hidden text-sm md:block hover:text-foreground text-muted-foreground transition-colors"
+                  className="hover:text-foreground text-muted-foreground hidden text-sm transition-colors md:block"
                 >
                   {action.text}
                 </a>
