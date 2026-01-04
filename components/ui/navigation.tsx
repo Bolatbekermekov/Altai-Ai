@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react";
 
+import { useI18n } from "@/components/contexts/language-context";
 import { cn } from "@/lib/utils";
 
 import LaunchUI from "../logos/launch-ui";
@@ -19,14 +20,27 @@ interface ComponentItem {
   description: string;
 }
 
+type MenuContent = ReactNode | "default" | "components";
+
 interface MenuItem {
   title: string;
   href?: string;
-  content?: ReactNode;
+  content?: MenuContent;
 }
 
+interface LocalizedMenuItem {
+  text: string;
+  href?: string;
+  content?: MenuContent;
+}
+
+type NavigationMenuItemInput =
+  | MenuItem
+  | LocalizedMenuItem
+  | { text: string; href?: string; content?: MenuContent };
+
 interface NavigationProps {
-  menuItems?: MenuItem[];
+  menuItems?: NavigationMenuItemInput[];
   components?: ComponentItem[];
   logo?: ReactNode;
   logoTitle?: string;
@@ -38,24 +52,7 @@ interface NavigationProps {
 }
 
 export default function Navigation({
-  menuItems = [
-    {
-      title: "Услуги",
-      href: "#services",
-    },
-    {
-      title: "Кейсы",
-      href: "#cases",
-    },
-    {
-      title: "Процесс",
-      href: "#process",
-    },
-    {
-      title: "Отзывы",
-      href: "#reviews",
-    },
-  ],
+  menuItems,
   components = [
     {
       title: "Alert Dialog",
@@ -88,7 +85,7 @@ export default function Navigation({
     },
   ],
   logo = <LaunchUI />,
-  logoTitle = "Altai Ai",
+  logoTitle,
   logoDescription = "Шаблон лендинга на React, Shadcn/ui и Tailwind, который можно быстро адаптировать под проект.",
   introItems = [
     {
@@ -97,10 +94,28 @@ export default function Navigation({
     },
   ],
 }: NavigationProps) {
+  const { t } = useI18n();
+  const navCopy = t.navbar;
+  const rawMenuItems =
+    (menuItems as NavigationMenuItemInput[] | undefined) ||
+    (navCopy.menuItems as NavigationMenuItemInput[]);
+  const resolvedMenuItems: MenuItem[] = rawMenuItems.map((item) => {
+    if ("title" in item) {
+      return item;
+    }
+    const localized = item as LocalizedMenuItem;
+    return {
+      title: localized.text,
+      href: localized.href,
+      content: localized.content,
+    };
+  });
+  const resolvedLogoTitle = logoTitle || navCopy.brand;
+
   return (
     <NavigationMenu className="hidden md:flex" delayDuration={0}>
       <NavigationMenuList>
-        {menuItems.map((item, index) => (
+        {resolvedMenuItems.map((item, index) => (
           <NavigationMenuItem key={index}>
             {item.content ? (
               <>
@@ -112,7 +127,7 @@ export default function Navigation({
                         <div className="from-muted/30 to-muted/10 flex h-full w-full flex-col justify-end rounded-md bg-linear-to-b p-6 no-underline outline-hidden select-none focus:shadow-md">
                           {logo}
                           <div className="mt-4 mb-2 text-lg font-medium">
-                            {logoTitle}
+                            {resolvedLogoTitle}
                           </div>
                           <p className="text-muted-foreground text-sm leading-tight">
                             {logoDescription}

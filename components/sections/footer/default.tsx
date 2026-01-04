@@ -3,6 +3,7 @@
 import { ChevronDown, Minus, Plus } from "lucide-react";
 import { ReactNode, useState } from "react";
 
+import { useI18n } from "@/components/contexts/language-context";
 import { cn } from "@/lib/utils";
 
 import LaunchUI from "../../logos/launch-ui";
@@ -31,17 +32,19 @@ interface FooterProps {
   copyright?: string;
   policies?: FooterLink[];
   className?: string;
-  iconStyle?: "chevron" | "plus-minus"; // Выбор стиля иконки
+  iconStyle?: "chevron" | "plus-minus";
 }
 
 function AccordionColumn({
   column,
   index,
   iconStyle = "chevron",
+  toggleLabels,
 }: {
   column: FooterColumnProps;
   index: number;
   iconStyle?: "chevron" | "plus-minus";
+  toggleLabels: { expand: string; collapse: string };
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -51,7 +54,7 @@ function AccordionColumn({
         onClick={() => setIsOpen(!isOpen)}
         className="group flex w-full items-center justify-between py-4 text-left transition-colors hover:opacity-80 md:pointer-events-none md:cursor-default md:pb-0"
         aria-expanded={isOpen}
-        aria-label={`${isOpen ? "Свернуть" : "Развернуть"} ${column.title}`}
+        aria-label={`${isOpen ? toggleLabels.collapse : toggleLabels.expand} ${column.title}`}
       >
         <span className="text-foreground text-sm font-semibold">
           {column.title}
@@ -113,49 +116,21 @@ function AccordionColumn({
 
 export default function FooterSection({
   logo = <LaunchUI />,
-  name = "Altai Ai",
-  columns = [
-    {
-      title: "Продукт",
-      links: [
-        { text: "Услуги", href: "#services" },
-        { text: "Кейсы", href: "#cases" },
-        { text: "Процесс", href: "#process" },
-      ],
-    },
-    {
-      title: "Компания",
-      links: [
-        { text: "Главная", href: "/" },
-        { text: "Telegram-боты", href: "#telegram" },
-        { text: "Отзывы", href: "#reviews" },
-      ],
-    },
-    {
-      title: "Контакты",
-      links: [
-        {
-          text: "WhatsApp",
-          href: "https://wa.me/77757200604",
-          external: true,
-        },
-        {
-          text: "Telegram",
-          href: "https://t.me/bolatbekermeko_v",
-          external: true,
-        },
-        { text: "Связаться", href: "#contact" },
-      ],
-    },
-  ],
-  copyright = "(c) 2025 Bolatbek Yermekov. Все права защищены",
-  policies = [
-    { text: "Политика конфиденциальности", href: "#" },
-    { text: "Условия использования", href: "#" },
-  ],
+  name,
+  columns,
+  copyright,
+  policies,
   className,
-  iconStyle = "chevron", // По умолчанию chevron
+  iconStyle = "chevron",
 }: FooterProps) {
+  const { t } = useI18n();
+  const copy = t.footer;
+
+  const resolvedName = name || copy.brand;
+  const resolvedColumns = columns || copy.columns;
+  const resolvedPolicies = policies || copy.policies;
+  const resolvedCopyright = copyright || copy.copyright;
+
   return (
     <footer
       className={cn(
@@ -166,37 +141,37 @@ export default function FooterSection({
       <div className="max-w-container mx-auto">
         <Footer className="pt-0">
           <FooterContent className="gap-y-0 md:gap-y-12">
-            {/* Брендовый блок */}
             <FooterColumn className="border-border col-span-1 gap-4 border-b pb-6 md:col-span-2 md:border-0 md:pb-0">
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0">{logo}</div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold sm:text-xl">{name}</h3>
+                  <h3 className="text-lg font-bold sm:text-xl">
+                    {resolvedName}
+                  </h3>
                   <p className="text-muted-foreground mt-2 max-w-xs text-sm leading-relaxed">
-                    Разрабатываем умные продукты: чат-боты, веб‑сервисы и
-                    мобильные приложения под ваши бизнес‑задачи.
+                    {copy.description}
                   </p>
                 </div>
               </div>
             </FooterColumn>
 
-            {/* Аккордеон колонки */}
-            {columns.map((column, index) => (
+            {resolvedColumns.map((column, index) => (
               <AccordionColumn
                 key={index}
                 column={column}
                 index={index}
                 iconStyle={iconStyle}
+                toggleLabels={copy.toggle}
               />
             ))}
           </FooterContent>
 
           <FooterBottom className="mt-8 gap-4 pt-6 md:mt-10">
             <div className="text-muted-foreground text-xs leading-relaxed">
-              {copyright}
+              {resolvedCopyright}
             </div>
             <nav className="flex flex-col gap-3 text-xs sm:flex-row sm:items-center sm:gap-5">
-              {policies.map((policy, index) =>
+              {resolvedPolicies.map((policy, index) =>
                 policy.href ? (
                   <a
                     key={index}

@@ -12,9 +12,11 @@ import {
   User,
   Users,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
+
+import { useI18n } from "@/components/contexts/language-context";
 
 interface FormData {
   name: string;
@@ -22,19 +24,28 @@ interface FormData {
   message: string;
 }
 
-const schema = yup
-  .object({
-    name: yup.string().required("Имя обязательно"),
-    email: yup.string().email("Неверный email").required("Email обязателен"),
-    message: yup
-      .string()
-      .min(10, "Сообщение должно содержать минимум 10 символов")
-      .required("Сообщение обязательно"),
-  })
-  .required();
-
 export default function ContactPage() {
+  const { t, language } = useI18n();
+  const copy = t.contact;
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const schema = useMemo(
+    () =>
+      yup
+        .object({
+          name: yup.string().required(copy.form.validation.nameRequired),
+          email: yup
+            .string()
+            .email(copy.form.validation.emailInvalid)
+            .required(copy.form.validation.emailRequired),
+          message: yup
+            .string()
+            .min(10, copy.form.validation.messageMin)
+            .required(copy.form.validation.messageRequired),
+        })
+        .required(),
+    [copy.form.validation],
+  );
 
   const {
     register,
@@ -42,35 +53,42 @@ export default function ContactPage() {
     formState: { errors },
     reset,
     watch,
+    trigger,
   } = useForm<FormData>({
     resolver: yupResolver(schema),
   });
 
-  // ✅ Формируем WhatsApp ссылку с текстом
-  const whatsappNumber = "77757200604";
+  useEffect(() => {
+    if (Object.keys(errors).length) {
+      trigger();
+    }
+  }, [errors, language, trigger]);
+
+  const whatsappNumber = copy.whatsappNumber;
   const getWhatsAppUrl = () => {
     const name = watch("name") || "";
     const email = watch("email") || "";
     const message = watch("message") || "";
 
-    const text = `Здравствуйте! Хочу обсудить проект с Altai AI.
+    const text = `${copy.whatsappTemplate.greeting}
 
-👥 Меня зовут: ${name || "…"}
-📧 Email: ${email || "—"}
+${copy.whatsappTemplate.nameLabel}: ${name || "-"}
+${copy.whatsappTemplate.emailLabel}: ${email || "-"}
 
-💼 Задача:
-${message || "Опишите, что нужно сделать"}
+${copy.whatsappTemplate.taskLabel}:
+${message || copy.whatsappTemplate.defaultTask}
 
-Спасибо! Жду вашего ответа от команды Altai AI 🙌`;
+${copy.whatsappTemplate.thanks}`;
 
     return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
   };
 
-  const onSubmit = (data: FormData) => {
-    // Открываем WhatsApp с готовым текстом
-    window.open(getWhatsAppUrl(), "_blank");
+  const telegramLink = copy.telegram.username.startsWith("@")
+    ? `https://t.me/${copy.telegram.username.slice(1)}`
+    : copy.telegram.username;
 
-    // Показываем success экран
+  const onSubmit = (_data: FormData) => {
+    window.open(getWhatsAppUrl(), "_blank");
     setIsSubmitted(true);
     reset();
   };
@@ -89,16 +107,15 @@ ${message || "Опишите, что нужно сделать"}
             className="space-y-4 text-center md:space-y-6"
           >
             <span className="glass-4 inline-block rounded-full px-4 py-1.5 text-xs font-medium md:px-6 md:py-2 md:text-sm">
-              Команда Altai AI
+              {copy.tag}
             </span>
             <h1 className="mx-auto max-w-4xl text-3xl leading-tight font-bold md:text-5xl lg:text-6xl xl:text-7xl">
               <span className="from-foreground to-foreground dark:to-brand bg-linear-to-r bg-clip-text text-transparent drop-shadow-[2px_1px_24px_var(--brand-foreground)]">
-                Готовы начать ваш проект?
+                {copy.title}
               </span>
             </h1>
             <p className="text-muted-foreground mx-auto max-w-2xl text-base md:text-xl lg:text-2xl">
-              Наша команда разработчиков свяжется с вами в WhatsApp в течение
-              часа
+              {copy.subtitle}
             </p>
           </motion.div>
         </div>
@@ -115,17 +132,16 @@ ${message || "Опишите, что нужно сделать"}
         >
           <div className="space-y-3 md:space-y-4">
             <h2 className="from-foreground to-brand bg-gradient-to-r bg-clip-text text-2xl font-bold text-transparent md:text-3xl">
-              Altai AI
+              {copy.teamName}
             </h2>
             <div className="text-muted-foreground flex items-center gap-2 text-base md:gap-3 md:text-lg">
               <Users className="size-6 md:size-8" />
-              <span>Команда разработчиков</span>
+              <span>{copy.teamRole}</span>
             </div>
           </div>
 
           <p className="text-muted-foreground text-sm leading-relaxed md:text-base lg:text-lg">
-            Full-stack команда с опытом создания сложных веб-приложений,
-            мобильных приложений, Telegram ботов и AI систем для бизнеса.
+            {copy.teamAbout}
           </p>
 
           {/* WhatsApp Direct Link */}
@@ -147,10 +163,10 @@ ${message || "Опишите, что нужно сделать"}
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-base font-bold md:text-xl">
-                  +7 (775) 720-06-04
+                  {copy.whatsapp.label}
                 </p>
                 <p className="text-muted-foreground truncate text-xs md:text-sm">
-                  Написать команде Altai AI
+                  {copy.whatsapp.caption}
                 </p>
               </div>
               <ArrowUpRight className="ml-auto size-5 shrink-0 text-green-600 opacity-0 transition-all group-hover:opacity-100 md:size-6" />
@@ -159,7 +175,7 @@ ${message || "Опишите, что нужно сделать"}
 
           {/* Telegram */}
           <a
-            href="https://t.me/bolatbekermeko_v"
+            href={telegramLink}
             target="_blank"
             rel="noopener noreferrer"
             className="glass-4 hover:glass-5 group flex items-center gap-3 rounded-xl p-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl md:gap-4 md:rounded-2xl md:p-6"
@@ -169,10 +185,10 @@ ${message || "Опишите, что нужно сделать"}
             </div>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium md:text-lg">
-                @bolatbekermeko_v
+                {copy.telegram.username}
               </p>
               <p className="text-muted-foreground truncate text-xs md:text-sm">
-                Основной контакт
+                {copy.telegram.caption}
               </p>
             </div>
             <ArrowUpRight className="text-brand ml-auto size-4 shrink-0 opacity-0 transition-all group-hover:opacity-100 md:size-5" />
@@ -188,21 +204,17 @@ ${message || "Опишите, что нужно сделать"}
           >
             <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold md:mb-4 md:text-base">
               <Sparkles className="text-brand size-4 md:size-5" />
-              Наши услуги
+              {copy.shortcuts.title}
             </h4>
             <div className="grid grid-cols-2 gap-2 text-xs md:text-sm">
-              <button className="glass-4 hover:glass-5 rounded-lg px-3 py-2 font-medium transition-all md:rounded-xl md:px-4">
-                Веб-приложения
-              </button>
-              <button className="glass-4 hover:glass-5 rounded-lg px-3 py-2 font-medium transition-all md:rounded-xl md:px-4">
-                Мобильные apps
-              </button>
-              <button className="glass-4 hover:glass-5 rounded-lg px-3 py-2 font-medium transition-all md:rounded-xl md:px-4">
-                AI решения
-              </button>
-              <button className="glass-4 hover:glass-5 rounded-lg px-3 py-2 font-medium transition-all md:rounded-xl md:px-4">
-                Telegram боты
-              </button>
+              {copy.shortcuts.items.map((item) => (
+                <button
+                  key={item}
+                  className="glass-4 hover:glass-5 rounded-lg px-3 py-2 font-medium transition-all md:rounded-xl md:px-4"
+                >
+                  {item}
+                </button>
+              ))}
             </div>
           </motion.div>
         </motion.div>
@@ -218,7 +230,7 @@ ${message || "Опишите, что нужно сделать"}
           <div className="glass-4 rounded-xl p-5 md:rounded-2xl md:p-8">
             <h3 className="mb-4 flex items-center gap-2 text-xl font-bold md:mb-6 md:gap-3 md:text-2xl">
               <Users className="text-brand size-6 md:size-8" />
-              Обсудить проект с Altai AI
+              {copy.form.title}
             </h3>
 
             {isSubmitted ? (
@@ -229,16 +241,16 @@ ${message || "Опишите, что нужно сделать"}
               >
                 <CheckCircle className="size-12 text-green-500 md:size-16" />
                 <h4 className="text-xl font-bold text-green-600 md:text-2xl">
-                  Сообщение отправлено!
+                  {copy.form.successTitle}
                 </h4>
                 <p className="text-muted-foreground text-sm md:text-base">
-                  Открывается WhatsApp с готовым текстом для команды Altai AI
+                  {copy.form.successSubtitle}
                 </p>
                 <button
                   onClick={() => setIsSubmitted(false)}
                   className="glass-4 hover:glass-5 rounded-full px-5 py-2.5 text-sm font-medium transition-all md:px-6 md:py-3 md:text-base"
                 >
-                  Заполнить ещё раз
+                  {copy.form.successCta}
                 </button>
               </motion.div>
             ) : (
@@ -249,14 +261,14 @@ ${message || "Опишите, что нужно сделать"}
                 <div className="space-y-4">
                   <div>
                     <label className="mb-1.5 block text-sm font-medium md:mb-2 md:text-base">
-                      Ваше имя
+                      {copy.form.fields.name.label}
                     </label>
                     <div className="relative">
                       <User className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2 md:size-5" />
                       <input
                         {...register("name")}
                         className="glass-3 placeholder:text-muted-foreground focus:border-brand/50 w-full rounded-lg border-2 border-transparent py-3 pr-4 pl-10 text-sm transition-all focus:outline-none md:rounded-xl md:py-4 md:pl-12 md:text-base"
-                        placeholder="Иван Иванов"
+                        placeholder={copy.form.fields.name.placeholder}
                         style={{ minHeight: "48px" }}
                       />
                       {errors.name && (
@@ -269,7 +281,7 @@ ${message || "Опишите, что нужно сделать"}
 
                   <div>
                     <label className="mb-1.5 block text-sm font-medium md:mb-2 md:text-base">
-                      Email
+                      {copy.form.fields.email.label}
                     </label>
                     <div className="relative">
                       <Mail className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2 md:size-5" />
@@ -277,7 +289,7 @@ ${message || "Опишите, что нужно сделать"}
                         {...register("email")}
                         type="email"
                         className="glass-3 placeholder:text-muted-foreground focus:border-brand/50 w-full rounded-lg border-2 border-transparent py-3 pr-4 pl-10 text-sm transition-all focus:outline-none md:rounded-xl md:py-4 md:pl-12 md:text-base"
-                        placeholder="name@company.kz"
+                        placeholder={copy.form.fields.email.placeholder}
                         style={{ minHeight: "48px" }}
                       />
                       {errors.email && (
@@ -290,7 +302,7 @@ ${message || "Опишите, что нужно сделать"}
 
                   <div>
                     <label className="mb-1.5 block text-sm font-medium md:mb-2 md:text-base">
-                      Описание проекта
+                      {copy.form.fields.message.label}
                     </label>
                     <div className="relative">
                       <MessageSquare className="text-muted-foreground absolute top-3 left-3 size-4 md:top-4 md:size-5" />
@@ -298,7 +310,7 @@ ${message || "Опишите, что нужно сделать"}
                         {...register("message")}
                         rows={4}
                         className="glass-3 placeholder:text-muted-foreground focus:border-brand/50 w-full resize-none rounded-lg border-2 border-transparent py-3 pr-4 pl-10 text-sm transition-all focus:outline-none md:rounded-xl md:py-4 md:pl-12 md:text-base"
-                        placeholder="Расскажите о вашем проекте, задачах и сроках..."
+                        placeholder={copy.form.fields.message.placeholder}
                         style={{ minHeight: "120px" }}
                       />
                       {errors.message && (
@@ -318,7 +330,7 @@ ${message || "Опишите, что нужно сделать"}
                   style={{ minHeight: "56px" }}
                 >
                   <MessageCircle className="size-5 text-green-600 transition-transform group-hover:translate-x-1 md:size-7" />
-                  Написать в WhatsApp
+                  {copy.whatsapp.sendButton}
                 </motion.button>
               </form>
             )}
@@ -335,11 +347,11 @@ ${message || "Опишите, что нужно сделать"}
               <div className="mb-1.5 flex items-center gap-2 md:mb-2">
                 <MessageCircle className="size-3.5 text-green-500 md:size-4" />
                 <span className="text-xs md:text-sm">
-                  Все заявки обрабатывает команда Altai AI
+                  {copy.preview.handledBy}
                 </span>
               </div>
               <p className="text-[10px] opacity-75 md:text-xs">
-                Данные защищены • Ответ в течение часа
+                {copy.preview.privacy}
               </p>
             </motion.div>
           )}

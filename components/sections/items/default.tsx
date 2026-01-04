@@ -5,6 +5,8 @@ import gsap from "gsap";
 import { ArrowUpRight, BarChart3, Clock, DollarSign, Zap } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { useI18n } from "@/components/contexts/language-context";
+
 interface BenefitItem {
   title: string;
   description: string;
@@ -28,37 +30,6 @@ const useIsMobile = () => {
 
   return isMobile;
 };
-
-const benefits: BenefitItem[] = [
-  {
-    title: "Рост продуктивности",
-    description:
-      "Получайте практичные инсайты на основе AI-аналитики, чтобы быстрее принимать решения.",
-    icon: <Zap className="size-5 md:size-6" />,
-    stat: "+45%",
-  },
-  {
-    title: "Доступность 24/7",
-    description:
-      "AI-системы работают круглосуточно и обеспечивают поддержку без простоев.",
-    icon: <Clock className="size-5 md:size-6" />,
-    stat: "24/7",
-  },
-  {
-    title: "Снижение затрат",
-    description:
-      "Автоматизация сокращает ручные задачи, снижает операционные расходы и оптимизирует ресурсы.",
-    icon: <DollarSign className="size-5 md:size-6" />,
-    stat: "-30%",
-  },
-  {
-    title: "Аналитика на данных",
-    description:
-      "Используйте AI для анализа больших данных, поиска трендов и точных бизнес-решений.",
-    icon: <BarChart3 className="size-5 md:size-6" />,
-    stat: "100%",
-  },
-];
 
 // Benefit Card Component - оптимизирован для мобильных
 const BenefitCard = ({
@@ -280,6 +251,15 @@ export default function Items() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const isMobile = useIsMobile();
   const prefersReducedMotion = useReducedMotion();
+  const { t } = useI18n();
+  const copy = t.benefits;
+  const benefits = copy.items;
+  const benefitIcons = [
+    <Zap className="size-5 md:size-6" />,
+    <Clock className="size-5 md:size-6" />,
+    <DollarSign className="size-5 md:size-6" />,
+    <BarChart3 className="size-5 md:size-6" />,
+  ];
 
   useEffect(() => {
     // Отключаем анимацию текста на мобильных и при prefersReducedMotion
@@ -328,7 +308,7 @@ export default function Items() {
             className="inline-block"
           >
             <span className="glass-4 from-foreground to-brand rounded-full bg-linear-to-r bg-clip-text px-3 py-1.5 text-xs font-medium text-transparent md:px-4 md:py-2 md:text-sm">
-              Почему мы
+              {copy.tag}
             </span>
           </motion.div>
 
@@ -342,11 +322,11 @@ export default function Items() {
                 : "drop-shadow(2px 1px 24px var(--brand-foreground))",
             }}
           >
-            Преобразуйте бизнес с Altai.ai
+            {copy.title}
           </h2>
 
           <p className="text-muted-foreground mx-auto max-w-3xl text-base font-semibold md:text-lg lg:text-xl">
-            Современные AI-решения, которые дают измеримый результат
+            {copy.subtitle}
           </p>
         </motion.div>
 
@@ -359,7 +339,17 @@ export default function Items() {
           className="mx-auto max-w-4xl space-y-3 md:space-y-4"
         >
           {benefits.map((benefit, index) => (
-            <BenefitCard key={benefit.title} benefit={benefit} index={index} />
+            <BenefitCard
+              key={`${benefit.title}-${index}`}
+              benefit={{
+                ...benefit,
+                icon:
+                  benefitIcons[index] ||
+                  benefitIcons[benefitIcons.length - 1] ||
+                  null,
+              }}
+              index={index}
+            />
           ))}
         </motion.div>
       </div>

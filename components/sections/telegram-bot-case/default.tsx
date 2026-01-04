@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { useI18n } from "@/components/contexts/language-context";
+
 interface TelegramBotSolutionProps {
   title?: string;
   description?: string;
@@ -21,17 +23,23 @@ interface TelegramBotSolutionProps {
 }
 
 export default function TelegramBotSolution({
-  title = "Решения для Telegram-ботов",
-  description = "Разрабатываем умные Telegram боты для автоматизации вашего бизнеса. От простых чат-ботов до сложных систем с интеграциями, платежами и аналитикой.",
-  capabilities = [
-    "Чат-боты с AI и обработкой естественного языка",
-    "Интеграция с CRM, платежными системами и API",
-    "Админ-панели для управления ботом",
-    "Автоматизация бизнес-процессов и уведомлений",
-    "Аналитика и отчетность в реальном времени",
-  ],
-  screenshot = "/telegram-bot-screenshot.png",
+  title,
+  description,
+  capabilities,
+  screenshot,
 }: TelegramBotSolutionProps) {
+  const { t } = useI18n();
+  const copy = t.telegram;
+  const resolvedTitle = title || copy.title;
+  const resolvedDescription = description || copy.description;
+  const resolvedCapabilities = capabilities || copy.capabilities;
+  const resolvedScreenshot = screenshot || copy.screenshot;
+  const sellingPoints = copy.sellingPoints;
+  const sellingIcons = [
+    <Zap className="size-5 md:size-6" />,
+    <Shield className="size-5 md:size-6" />,
+    <Clock className="size-5 md:size-6" />,
+  ];
   const iphoneRef = useRef<HTMLDivElement>(null);
   const floatingRef1 = useRef<HTMLDivElement>(null);
   const floatingRef2 = useRef<HTMLDivElement>(null);
@@ -132,18 +140,18 @@ export default function TelegramBotSolution({
         >
           <div className="inline-block">
             <span className="glass-4 text-brand rounded-full px-3 py-1.5 text-xs font-medium md:px-4 md:py-2 md:text-sm">
-              Наши решения
+              {copy.tag}
             </span>
           </div>
 
           <h2 className="mx-auto max-w-4xl px-4 text-3xl leading-tight font-bold md:text-4xl lg:text-5xl xl:text-6xl">
             <span className="from-foreground to-foreground dark:to-brand bg-linear-to-r bg-clip-text text-transparent drop-shadow-[2px_1px_24px_var(--brand-foreground)]">
-              {title}
+              {resolvedTitle}
             </span>
           </h2>
 
           <p className="text-muted-foreground mx-auto max-w-3xl px-4 text-base md:text-lg lg:text-xl">
-            {description}
+            {resolvedDescription}
           </p>
         </motion.div>
 
@@ -170,8 +178,8 @@ export default function TelegramBotSolution({
                 <div className="relative aspect-[9/19.5] overflow-hidden rounded-[2rem] bg-white md:rounded-[2.5rem]">
                   {/* Single Screenshot */}
                   <img
-                    src={screenshot}
-                    alt="Интерфейс Telegram-бота"
+                    src={resolvedScreenshot}
+                    alt={resolvedTitle}
                     className="h-full w-full object-cover"
                     loading="lazy"
                     onError={(e) => {
@@ -227,16 +235,16 @@ export default function TelegramBotSolution({
           >
             <div className="space-y-3 md:space-y-4">
               <h3 className="text-xl font-bold md:text-2xl lg:text-3xl">
-                Что мы можем сделать
+                {copy.capabilitiesTitle}
               </h3>
               <p className="text-muted-foreground text-base md:text-lg">
-                Полный спектр решений для Telegram
+                {copy.capabilitiesSubtitle}
               </p>
             </div>
 
             {/* Capability Cards */}
             <div className="space-y-3 md:space-y-4">
-              {capabilities.map((capability, index) => (
+              {resolvedCapabilities.map((capability, index) => (
                 <motion.div
                   key={capability}
                   initial={{ opacity: 0, x: 20 }}
@@ -272,10 +280,10 @@ export default function TelegramBotSolution({
               <a
                 href="#contact"
                 className="glass-4 hover:glass-5 group inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-all duration-300 active:scale-95 md:gap-3 md:px-8 md:py-4"
-                aria-label="Обсудить проект"
+                aria-label={copy.cta}
               >
                 <span className="from-foreground to-foreground dark:to-brand bg-linear-to-r bg-clip-text text-transparent">
-                  Обсудить проект
+                  {copy.cta}
                 </span>
                 <ArrowUpRight className="text-brand size-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 md:size-5" />
               </a>
@@ -291,23 +299,7 @@ export default function TelegramBotSolution({
           transition={{ duration: 0.5 }}
           className="mx-auto mt-12 grid max-w-5xl grid-cols-1 gap-4 sm:grid-cols-3 md:mt-20 md:gap-6"
         >
-          {[
-            {
-              icon: <Zap className="size-5 md:size-6" />,
-              title: "Быстрая разработка",
-              description: "От идеи до запуска за 2-4 недели",
-            },
-            {
-              icon: <Shield className="size-5 md:size-6" />,
-              title: "Надёжность",
-              description: "99.9% аптайм и защита данных",
-            },
-            {
-              icon: <Clock className="size-5 md:size-6" />,
-              title: "Поддержка 24/7",
-              description: "Всегда на связи для вас",
-            },
-          ].map((feature, index) => (
+          {sellingPoints.map((feature, index) => (
             <motion.div
               key={feature.title}
               initial={{ opacity: 0, scale: 0.95 }}
@@ -318,7 +310,7 @@ export default function TelegramBotSolution({
               className="glass-4 hover:glass-5 group rounded-lg p-5 text-center transition-all duration-300 md:rounded-xl md:p-6"
             >
               <div className="glass-3 text-brand mx-auto mb-3 flex size-12 items-center justify-center rounded-lg transition-transform group-hover:scale-110 md:mb-4 md:size-14 md:rounded-xl">
-                {feature.icon}
+                {sellingIcons[index] || sellingIcons[0]}
               </div>
               <h4 className="mb-2 text-base font-semibold md:text-lg">
                 {feature.title}

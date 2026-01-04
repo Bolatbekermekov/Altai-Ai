@@ -1,7 +1,13 @@
+"use client";
+
 import { type VariantProps } from "class-variance-authority";
 import { Menu } from "lucide-react";
 import { ReactNode } from "react";
 
+import {
+  Language,
+  useI18n,
+} from "@/components/contexts/language-context";
 import { cn } from "@/lib/utils";
 
 import LaunchUI from "../../logos/launch-ui";
@@ -42,25 +48,53 @@ interface NavbarProps {
 export default function Navbar({
   logo = <LaunchUI />,
   name = "Altai Ai",
-  mobileLinks = [
-    { text: "Услуги", href: "#services" },
-    { text: "Кейсы", href: "#cases" },
-    { text: "Процесс", href: "#process" },
-    { text: "Отзывы", href: "#reviews" },
-    { text: "Контакты", href: "#contact" },
-  ],
-  actions = [
-    {
-      text: "Получить консультацию",
-      isButton: true,
-      variant: "default",
-      href: "#contact",
-    },
-  ],
+  mobileLinks,
+  actions,
   showNavigation = true,
   customNavigation,
   className,
 }: NavbarProps) {
+  const { t, language, setLanguage, labels } = useI18n();
+  const navCopy = t.navbar;
+
+  const resolvedName = name || navCopy.brand;
+  const resolvedMobileLinks = mobileLinks ?? navCopy.menuItems;
+  const resolvedActions = actions ?? navCopy.actions;
+  const resolvedNavigation =
+    customNavigation || <Navigation menuItems={navCopy.menuItems} />;
+
+  const languageOptions: Language[] = ["ru", "en"];
+
+  const renderLanguageSwitch = (variant: "desktop" | "mobile" = "desktop") => (
+    <div
+      className={cn(
+        "glass-3 inline-flex items-center gap-1 rounded-full border border-border/60 p-1 text-xs shadow-sm",
+        variant === "mobile" && "justify-center md:hidden",
+        variant === "desktop" && "hidden md:inline-flex",
+      )}
+      aria-label={labels[language].switchLabel}
+    >
+      {languageOptions.map((code) => (
+        <button
+          key={code}
+          type="button"
+          onClick={() => setLanguage(code)}
+          className={cn(
+            "rounded-full px-3 py-1 font-semibold transition-colors",
+            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
+            language === code
+              ? "bg-foreground text-background shadow-sm"
+              : "text-muted-foreground hover:text-foreground",
+          )}
+          aria-pressed={language === code}
+          aria-label={`${labels[code].switchLabel}: ${labels[code].label}`}
+        >
+          {code.toUpperCase()}
+        </button>
+      ))}
+    </div>
+  );
+
   return (
     <header className={cn("sticky top-0 z-50 -mb-4 px-4 pb-4", className)}>
       <div className="fade-bottom bg-background/15 absolute left-0 h-24 w-full backdrop-blur-lg"></div>
@@ -70,19 +104,21 @@ export default function Navbar({
             <a
               href="/"
               className="flex items-center gap-2 text-xl font-bold transition-opacity hover:opacity-80"
-              aria-label="Altai AI"
+              aria-label={navCopy.brand}
             >
               {logo}
-              {name}
+              {resolvedName}
             </a>
           </NavbarLeft>
 
           <NavbarCenter>
-            {showNavigation && (customNavigation || <Navigation />)}
+            {showNavigation && resolvedNavigation}
           </NavbarCenter>
 
           <NavbarRight>
-            {actions.map((action, index) =>
+            {renderLanguageSwitch("desktop")}
+            <div className="mr-1 md:hidden">{renderLanguageSwitch("mobile")}</div>
+            {resolvedActions.map((action, index) =>
               action.isButton ? (
                 <Button
                   key={index}
@@ -122,7 +158,7 @@ export default function Navbar({
                   className="shrink-0 md:hidden"
                 >
                   <Menu className="size-5" />
-                  <span className="sr-only">Открыть меню</span>
+                  <span className="sr-only">{navCopy.openMenu}</span>
                 </Button>
               </SheetTrigger>
               <SheetContent side="right">
@@ -130,12 +166,12 @@ export default function Navbar({
                   <a
                     href="/"
                     className="flex items-center gap-2 text-xl font-bold"
-                    aria-label="Altai AI"
+                    aria-label={navCopy.brand}
                   >
                     {logo}
-                    <span>{name}</span>
+                    <span>{resolvedName}</span>
                   </a>
-                  {mobileLinks.map((link, index) => (
+                  {resolvedMobileLinks.map((link, index) => (
                     <a
                       key={index}
                       href={link.href}

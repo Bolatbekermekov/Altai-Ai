@@ -1,0 +1,421 @@
+{
+  "language": {
+    "code": "en",
+    "label": "English",
+    "switchLabel": "Language"
+  },
+  "navbar": {
+    "brand": "Altai AI",
+    "menuItems": [
+      { "text": "Services", "href": "#services" },
+      { "text": "Case studies", "href": "#cases" },
+      { "text": "Process", "href": "#process" },
+      { "text": "Reviews", "href": "#reviews" },
+      { "text": "Contacts", "href": "#contact" }
+    ],
+    "actions": [
+      { "text": "Book a consultation", "href": "#contact", "isButton": true }
+    ],
+    "openMenu": "Open menu"
+  },
+  "hero": {
+    "badge": {
+      "label": "Altai AI — full-cycle delivery",
+      "cta": "Start a project"
+    },
+    "title": "We build digital products for your business",
+    "description": "We create web apps, mobile apps, Telegram bots, and AI solutions. Modern stack, fast delivery, results in 2-4 weeks.",
+    "buttons": {
+      "primary": { "text": "Chat on WhatsApp", "href": "https://wa.me/77757200604" },
+      "secondary": { "text": "See case studies", "href": "#cases" }
+    },
+    "mockupAlt": "Altai AI - modern web application"
+  },
+  "services": {
+    "tag": "Our services",
+    "title": { "main": "What we", "highlight": "build" },
+    "subtitle": "End-to-end delivery from idea to launch and ongoing support",
+    "items": [
+      {
+        "id": "ecommerce",
+        "title": "E-commerce",
+        "description": "Online stores and marketplaces from MVP to scalable platforms",
+        "features": ["Payments", "Catalog management", "Analytics"]
+      },
+      {
+        "id": "landing",
+        "title": "Landing pages",
+        "description": "High-converting landing pages with modern design and CRO in mind",
+        "features": ["Conversion-focused", "SEO-ready", "A/B test ready"]
+      },
+      {
+        "id": "mobile",
+        "title": "Mobile apps",
+        "description": "Native and cross-platform apps for iOS and Android with modern UX",
+        "features": ["React Native", "iOS/Android", "Push notifications"]
+      },
+      {
+        "id": "crm",
+        "title": "CRM & SaaS",
+        "description": "Enterprise management systems, CRM, and SaaS products with integrations",
+        "features": ["Custom workflows", "API integrations", "Cloud architecture"]
+      },
+      {
+        "id": "chatbot",
+        "title": "Chatbots",
+        "description": "AI-powered chatbots that automate support and sales",
+        "features": ["NLP/AI", "Omnichannel", "24/7 support"]
+      },
+      {
+        "id": "saas",
+        "title": "SaaS products",
+        "description": "Subscription-based SaaS with analytics and scalability built in",
+        "features": ["Subscription model", "Multi-tenant", "Autoscaling"]
+      }
+    ],
+    "demoText": {
+      "checkout": "Checkout",
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "revenue": "Revenue",
+      "assistant": "AI assistant",
+      "userMessage": "Schedule a meeting with John",
+      "botMessage": "I scheduled a Google Meet with John for tomorrow at 15:45.",
+      "botMeet": "Google Meet with John",
+      "saasMetrics": "SaaS metrics",
+      "activeUsers": "Active users",
+      "churn": "Churn",
+      "featureAutoScaling": "Autoscaling",
+      "featureMultiTenant": "Multi-tenant",
+      "landingHeadline": "Launch faster",
+      "landingCta": "Start"
+    }
+  },
+  "caseStudy": {
+    "tag": "Case study",
+    "title": "Zeep Coffee",
+    "description": "We built a full mobile app for a next-gen coffee shop and a CRM to manage orders, analytics, and automation.",
+    "services": [
+      "Mobile app development",
+      "CRM system",
+      "Backend API",
+      "UI/UX design"
+    ],
+    "links": {
+      "app": { "label": "Download on the App Store", "href": "https://apps.apple.com/kz/app/zeep/id6751442149" },
+      "site": { "label": "Open website", "href": "http://zeep.kz" }
+    },
+    "appScreenshots": ["/zeep-1.png", "/zeep-2.png", "/zeep-3.png"],
+    "crmScreenshot": "/zeep-crm.png",
+    "featureCards": [
+      { "title": "Full-stack development", "description": "React Native app + Node.js backend" },
+      { "title": "Live updates", "description": "WebSockets for instant orders" },
+      { "title": "CRM system", "description": "Full analytics and management" }
+    ],
+    "screenshotAltPrefix": "Zeep screen",
+    "crmAlt": "Zeep CRM system"
+  },
+  "telegram": {
+    "tag": "Our solutions",
+    "title": "Telegram bot solutions",
+    "description": "We build smart Telegram bots to automate your business — from simple chatbots to complex systems with integrations, payments, and analytics.",
+    "screenshot": "/telegram-bot-screenshot.png",
+    "capabilitiesTitle": "What we can build",
+    "capabilitiesSubtitle": "Full range of Telegram solutions",
+    "capabilities": [
+      "AI chatbots with natural language processing",
+      "Integrations with CRM, payment systems, and APIs",
+      "Admin panels to manage the bot",
+      "Business process automation and notifications",
+      "Real-time analytics and reporting"
+    ],
+    "cta": "Discuss the project",
+    "sellingPoints": [
+      { "title": "Fast delivery", "description": "From idea to launch in 2-4 weeks" },
+      { "title": "Reliability", "description": "99.9% uptime and data protection" },
+      { "title": "24/7 support", "description": "Always in touch for you" }
+    ]
+  },
+  "process": {
+    "title": { "main": "Our", "highlight": "process" },
+    "steps": [
+      {
+        "title": "Discovery",
+        "description": "We start with deep analysis of your processes to see where AI brings maximum impact."
+      },
+      {
+        "title": "Build and ship",
+        "description": "We craft a custom AI solution for your company, keeping quality and security at every step."
+      },
+      {
+        "title": "Support and growth",
+        "description": "After launch we support and improve the product so it keeps delivering results."
+      }
+    ],
+    "statisticsTitle": { "main": "Our", "highlight": "results" },
+    "statistics": [
+      { "label": "Projects shipped", "value": "5", "description": "First landings, bots, and CRMs launched in 2024-2025." },
+      { "label": "Paying clients", "value": "4", "description": "Pilot projects and launches with real references." },
+      { "label": "Time saved per day", "value": "4", "description": "We cut routine by about 2 hours daily." },
+      { "label": "Monthly savings, $", "value": "5000", "description": "Client-estimated savings after automation." }
+    ],
+    "labels": {
+      "speed": "Speed",
+      "efficiency": "Efficiency",
+      "costs": "Costs",
+      "update": "Update",
+      "updateCta": "Refresh"
+    }
+  },
+  "benefits": {
+    "tag": "Why us",
+    "title": "Transform your business with Altai.ai",
+    "subtitle": "Modern AI solutions that drive measurable outcomes",
+    "items": [
+      {
+        "title": "Higher productivity",
+        "description": "Get practical insights from AI analytics to decide faster.",
+        "stat": "+45%"
+      },
+      {
+        "title": "Available 24/7",
+        "description": "AI systems run around the clock and support users without downtime.",
+        "stat": "24/7"
+      },
+      {
+        "title": "Lower costs",
+        "description": "Automation cuts manual tasks, reduces operational expenses, and optimizes resources.",
+        "stat": "-30%"
+      },
+      {
+        "title": "Data-driven decisions",
+        "description": "Use AI to analyze data, find trends, and make accurate business calls.",
+        "stat": "100%"
+      }
+    ]
+  },
+  "contact": {
+    "tag": "Altai AI team",
+    "title": "Ready to start your project?",
+    "subtitle": "Our engineers will reply on WhatsApp within an hour",
+    "teamName": "Altai AI",
+    "teamRole": "Product team",
+    "teamAbout": "Full-stack team experienced in web apps, mobile apps, Telegram bots, and AI systems for business.",
+    "whatsappNumber": "77757200604",
+    "whatsapp": {
+      "label": "+7 (775) 720-06-04",
+      "caption": "Message the Altai AI team",
+      "sendButton": "Message on WhatsApp"
+    },
+    "telegram": {
+      "username": "@bolatbekermeko_v",
+      "caption": "Primary contact"
+    },
+    "shortcuts": {
+      "title": "Our services",
+      "items": ["Web apps", "Mobile apps", "AI solutions", "Telegram bots"]
+    },
+    "form": {
+      "title": "Discuss the project with Altai AI",
+      "successTitle": "Message sent!",
+      "successSubtitle": "WhatsApp opens with a pre-filled message for the Altai AI team",
+      "successCta": "Fill again",
+      "fields": {
+        "name": { "label": "Your name", "placeholder": "John Smith" },
+        "email": { "label": "Email", "placeholder": "name@company.com" },
+        "message": { "label": "Project details", "placeholder": "Tell us about your project, goals, and timing..." }
+      },
+      "validation": {
+        "nameRequired": "Name is required",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Email is invalid",
+        "messageMin": "Message must be at least 10 characters",
+        "messageRequired": "Message is required"
+      }
+    },
+    "preview": {
+      "handledBy": "All requests are handled by the Altai AI team",
+      "privacy": "Your data is safe • We reply within an hour"
+    },
+    "whatsappTemplate": {
+      "greeting": "Hi! I'd like to discuss a project with Altai AI.",
+      "nameLabel": "My name",
+      "emailLabel": "Email",
+      "taskLabel": "Task",
+      "defaultTask": "Describe what you need",
+      "thanks": "Thank you! Waiting for your reply from the Altai AI team"
+    }
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "items": [
+      {
+        "question": "What can you build for my business?",
+        "answer": {
+          "paragraphs": [
+            "We build web apps, mobile apps, Telegram bots, and AI solutions of any complexity.",
+            "From simple landing pages to complex CRMs with analytics and automation."
+          ]
+        }
+      },
+      {
+        "question": "How long does development take?",
+        "answer": {
+          "paragraphs": [
+            "Simple projects (landings, bots): 1-3 weeks",
+            "Mid-size projects (web apps, mobile apps): 1-2 months",
+            "Complex systems (CRM, AI solutions): 2-4 months",
+            "We confirm exact timelines after the technical scope."
+          ]
+        }
+      },
+      {
+        "question": "What technologies do you use?",
+        "answer": {
+          "paragraphs": [
+            "Frontend: React, Next.js, Vue, React Native, Tanstack, Tailwind CSS",
+            "Backend: Node.js, NestJS, Python (FastAPI), Go (Gin), PostgreSQL, MongoDB",
+            "AI/ML: Python, TensorFlow, OpenAI API, RAG, Qdrant, Pgvector, Modal",
+            "Infrastructure: Docker, AWS, Docker-Compose, CI/CD"
+          ]
+        }
+      },
+      {
+        "question": "How much will it cost?",
+        "answer": {
+          "paragraphs": [
+            "The price depends on scope and complexity.",
+            "We calculate the exact cost after we discuss the project."
+          ]
+        }
+      },
+      {
+        "question": "Do you work with upfront payments?",
+        "answer": {
+          "paragraphs": [
+            "Yes, we work under contract with staged payments:",
+            "30% upfront • 40% after prototype • 30% after delivery",
+            "Quality and deadlines are covered by the contract."
+          ]
+        }
+      },
+      {
+        "question": "What is included in post-launch support?",
+        "answer": {
+          "paragraphs": [
+            "Free support: 14 days after launch",
+            "Extra support: from 100 000 ₸/month"
+          ],
+          "list": [
+            "Updates and fixes",
+            "Adding new features",
+            "Monitoring and analytics",
+            "Hosting and backups"
+          ]
+        }
+      },
+      {
+        "question": "Can I see your work?",
+        "answer": {
+          "paragraphs": [
+            "Sure! Our case studies:",
+            "Happy to share details on a call."
+          ],
+          "list": [
+            "Zeep Coffee — mobile app + CRM system",
+            "StrategicLaw Group — multifunctional landing page",
+            "Corporate websites and a multifunctional Telegram bot for business"
+          ]
+        }
+      }
+    ]
+  },
+  "ctaSection": {
+    "title": "Kick off your project",
+    "button": { "text": "Book a consultation", "href": "#contact" }
+  },
+  "footer": {
+    "brand": "Altai AI",
+    "description": "We build smart products: chatbots, web services, and mobile apps for your business goals.",
+    "toggle": { "expand": "Expand", "collapse": "Collapse" },
+    "columns": [
+      {
+        "title": "Product",
+        "links": [
+          { "text": "Services", "href": "#services" },
+          { "text": "Case studies", "href": "#cases" },
+          { "text": "Process", "href": "#process" }
+        ]
+      },
+      {
+        "title": "Company",
+        "links": [
+          { "text": "Home", "href": "/" },
+          { "text": "Telegram bots", "href": "#telegram" },
+          { "text": "Reviews", "href": "#reviews" }
+        ]
+      },
+      {
+        "title": "Contacts",
+        "links": [
+          { "text": "WhatsApp", "href": "https://wa.me/77757200604", "external": true },
+          { "text": "Telegram", "href": "https://t.me/bolatbekermeko_v", "external": true },
+          { "text": "Contact us", "href": "#contact" }
+        ]
+      }
+    ],
+    "policies": [
+      { "text": "Privacy policy", "href": "#" },
+      { "text": "Terms of use", "href": "#" }
+    ],
+    "copyright": "(c) 2025 Bolatbek Yermekov. All rights reserved"
+  },
+  "team": {
+    "title": { "main": "Meet our", "highlight": "team" },
+    "reviewsTitle": "Reviews",
+    "cta": "Join our happy clients",
+    "messagePrefix": "message",
+    "reviews": [
+      {
+        "text": "We launched a multifunctional landing page for StrategicLaw Group: leads started on day one, the CRM connected without issues.",
+        "author": {
+          "name": "Zhaidar Rushanov",
+          "role": "Founder",
+          "company": "StrategicLaw Group",
+          "avatar": "/review/Рушанов_Жайдар.png"
+        },
+        "rating": 5
+      },
+      {
+        "text": "The mobile app and CRM for Zeep Coffee automated orders and delivery—customers order faster and the team handles more.",
+        "author": {
+          "name": "Aset Akbar",
+          "role": "CEO",
+          "company": "Zeep Coffee",
+          "avatar": "/review/Асет_Акбар.png"
+        },
+        "rating": 5
+      },
+      {
+        "text": "For the Frito fast-food chain we built an online menu, payments, and a bot. The average check grew and repeat orders increased noticeably.",
+        "author": {
+          "name": "Nurmukhametov Dias Otegenuly",
+          "role": "General Director",
+          "company": "Frito",
+          "avatar": "/review/frito.png"
+        },
+        "rating": 5
+      },
+      {
+        "text": "CRM and chatbots for AGRO SOLUTIONS LTD (Astana, ba.prg.kz) automated sales of agro equipment and customer management—the team sees every deal online.",
+        "author": {
+          "name": "Mautzhanov Birzhan Galymzhanuly",
+          "role": "Director",
+          "company": "AGRO SOLUTIONS LTD",
+          "avatar": "/review/agro.png"
+        },
+        "rating": 5
+      }
+    ]
+  }
+}

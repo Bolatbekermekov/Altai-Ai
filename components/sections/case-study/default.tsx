@@ -14,10 +14,10 @@ import {
 } from "lucide-react";
 import { useEffect, useRef } from "react";
 
+import { useI18n } from "@/components/contexts/language-context";
 interface CaseStudyProps {
   title?: string;
   description?: string;
-  client?: string;
   services?: string[];
   appLink?: string;
   websiteLink?: string;
@@ -26,20 +26,32 @@ interface CaseStudyProps {
 }
 
 export default function CaseStudy({
-  title = "Zeep Coffee",
-  description = "Мы разработали полноценное мобильное приложение для кофейни нового поколения и CRM-систему для управления заказами, аналитики и автоматизации бизнес-процессов.",
-  client = "Zeep",
-  services = [
-    "Разработка мобильных приложений",
-    "CRM система",
-    "Backend API",
-    "UI/UX дизайн",
-  ],
-  appLink = "https://apps.apple.com/kz/app/zeep/id6751442149",
-  websiteLink = "http://zeep.kz",
-  appScreenshots = ["/zeep-1.png", "/zeep-2.png", "/zeep-3.png"],
-  crmScreenshot = "/zeep-crm.png",
+  title,
+  description,
+  services,
+  appLink,
+  websiteLink,
+  appScreenshots,
+  crmScreenshot,
 }: CaseStudyProps) {
+  const { t } = useI18n();
+  const copy = t.caseStudy;
+
+  const resolvedTitle = title || copy.title;
+  const resolvedDescription = description || copy.description;
+  const resolvedServices = services || copy.services;
+  const resolvedAppLink = appLink || copy.links.app.href;
+  const resolvedWebsiteLink = websiteLink || copy.links.site.href;
+  const resolvedScreenshots = appScreenshots || copy.appScreenshots;
+  const resolvedCrm = crmScreenshot || copy.crmScreenshot;
+  const featureCards = copy.featureCards;
+  const featureIcons = [
+    <Code2 className="size-5 sm:size-6" />,
+    <Zap className="size-5 sm:size-6" />,
+    <Users className="size-5 sm:size-6" />,
+  ];
+  const appCtaLabel = copy.links.app.label;
+  const siteCtaLabel = copy.links.site.label;
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
     Autoplay({ delay: 3000, stopOnInteraction: true }),
   ]);
@@ -125,23 +137,23 @@ export default function CaseStudy({
         >
           <div className="inline-block">
             <span className="glass-4 text-brand rounded-full px-3 py-1.5 text-xs font-medium sm:px-4 sm:py-2 sm:text-sm">
-              Кейс
+              {copy.tag}
             </span>
           </div>
 
           <h2 className="mx-auto max-w-4xl px-4 text-3xl leading-tight font-bold sm:text-4xl md:text-5xl lg:text-6xl">
             <span className="from-foreground to-foreground dark:to-brand bg-linear-to-r bg-clip-text text-transparent drop-shadow-[2px_1px_24px_var(--brand-foreground)]">
-              {title}
+              {resolvedTitle}
             </span>
           </h2>
 
           <p className="text-muted-foreground mx-auto max-w-3xl px-4 text-base leading-relaxed sm:text-lg md:text-xl">
-            {description}
+            {resolvedDescription}
           </p>
 
           {/* Services Tags */}
           <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-center gap-2 px-4">
-            {services.map((service, index) => (
+            {resolvedServices.map((service, index) => (
               <motion.span
                 key={service}
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -178,26 +190,27 @@ export default function CaseStudy({
                 {/* Screen */}
                 <div className="relative aspect-[9/19.5] overflow-hidden rounded-[2rem] bg-white sm:rounded-[2.5rem]">
                   {/* Screenshot Carousel */}
-                  <div className="h-full overflow-hidden" ref={emblaRef}>
+                    <div className="h-full overflow-hidden" ref={emblaRef}>
                     <div className="flex h-full">
-                      {appScreenshots.map((screenshot, index) => (
+                      {resolvedScreenshots.map((screenshot, index) => {
+                        const placeholderText = `${copy.screenshotAltPrefix} #${index + 1}`;
+                        return (
                         <div
                           key={index}
                           className="h-full min-w-0 flex-[0_0_100%]"
                         >
                           <img
                             src={screenshot}
-                            alt={`Скрин Zeep ${index + 1}`}
+                            alt={`${copy.screenshotAltPrefix} ${index + 1}`}
                             className="h-full w-full object-cover"
                             onError={(e) => {
                               e.currentTarget.src =
-                                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='650'%3E%3Crect fill='%23f0f0f0' width='300' height='650'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23999' font-size='20' font-family='Arial'%3EСкриншот %23" +
-                                (index + 1) +
-                                "%3C/text%3E%3C/svg%3E";
+                                `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='650'%3E%3Crect fill='%23f0f0f0' width='300' height='650'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23999' font-size='20' font-family='Arial'%3E${encodeURIComponent(placeholderText)}%3C/text%3E%3C/svg%3E`;
                             }}
                           />
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -232,12 +245,12 @@ export default function CaseStudy({
               className="mt-6 text-center sm:mt-8"
             >
               <a
-                href={appLink}
+                href={resolvedAppLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="glass-4 hover:glass-5 group inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-medium transition-all duration-300 sm:px-6 sm:py-3 sm:text-sm"
               >
-                <span>Скачать в App Store</span>
+                <span>{appCtaLabel}</span>
                 <ExternalLink className="text-brand size-3.5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 sm:size-4" />
               </a>
             </motion.div>
@@ -263,7 +276,7 @@ export default function CaseStudy({
                   </div>
                   <div className="glass-3 ml-1.5 flex-1 rounded-lg px-2 py-1 sm:ml-2 sm:px-3">
                     <span className="text-muted-foreground text-[9px] sm:text-[10px]">
-                      {websiteLink}
+                      {resolvedWebsiteLink}
                     </span>
                   </div>
                 </div>
@@ -271,12 +284,12 @@ export default function CaseStudy({
                 {/* CRM Screenshot */}
                 <div className="bg-background relative aspect-video">
                   <img
-                    src={crmScreenshot}
-                    alt="CRM-система Zeep"
+                    src={resolvedCrm}
+                    alt={copy.crmAlt}
                     className="h-full w-full object-cover"
                     onError={(e) => {
                       e.currentTarget.src =
-                        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='675'%3E%3Crect fill='%23f0f0f0' width='1200' height='675'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23999' font-size='24' font-family='Arial'%3ECRM%20Скриншот%3C/text%3E%3C/svg%3E";
+                        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='675'%3E%3Crect fill='%23f0f0f0' width='1200' height='675'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23999' font-size='24' font-family='Arial'%3ECRM%20preview%3C/text%3E%3C/svg%3E";
                     }}
                   />
                 </div>
@@ -306,12 +319,12 @@ export default function CaseStudy({
               className="mt-6 text-center sm:mt-8"
             >
               <a
-                href={websiteLink}
+                href={resolvedWebsiteLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="glass-4 hover:glass-5 group inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-medium transition-all duration-300 sm:px-6 sm:py-3 sm:text-sm"
               >
-                <span>Открыть сайт</span>
+                <span>{siteCtaLabel}</span>
                 <ExternalLink className="text-brand size-3.5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 sm:size-4" />
               </a>
             </motion.div>
@@ -326,23 +339,7 @@ export default function CaseStudy({
           transition={{ duration: 0.6 }}
           className="mx-auto grid max-w-5xl grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3 md:gap-6"
         >
-          {[
-            {
-              icon: <Code2 className="size-5 sm:size-6" />,
-              title: "Full-Stack разработка",
-              description: "Приложение на React Native + backend на Node.js",
-            },
-            {
-              icon: <Zap className="size-5 sm:size-6" />,
-              title: "Онлайн-обновления",
-              description: "WebSocket для мгновенных заказов",
-            },
-            {
-              icon: <Users className="size-5 sm:size-6" />,
-              title: "CRM система",
-              description: "Полная аналитика и управление",
-            },
-          ].map((feature, index) => (
+          {featureCards.map((feature, index) => (
             <motion.div
               key={feature.title}
               initial={{ opacity: 0, y: 20 }}
@@ -352,7 +349,7 @@ export default function CaseStudy({
               className="glass-4 hover:glass-5 group rounded-xl p-5 transition-all duration-300 sm:p-6"
             >
               <div className="glass-3 text-brand mb-3 inline-flex size-10 items-center justify-center rounded-lg transition-transform group-hover:scale-110 sm:mb-4 sm:size-12">
-                {feature.icon}
+                {featureIcons[index] || featureIcons[0]}
               </div>
               <h3 className="mb-1.5 text-base font-semibold sm:mb-2 sm:text-lg">
                 {feature.title}

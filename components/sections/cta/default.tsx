@@ -1,6 +1,9 @@
+"use client";
+
 import { type VariantProps } from "class-variance-authority";
 import { ReactNode } from "react";
 
+import { useI18n } from "@/components/contexts/language-context";
 import { cn } from "@/lib/utils";
 
 import { Button, buttonVariants } from "../../ui/button";
@@ -21,26 +24,28 @@ interface CTAProps {
   className?: string;
 }
 
-export default function CTA({
-  title = "Начните проект",
-  buttons = [
+export default function CTA({ title, buttons, className }: CTAProps) {
+  const { t } = useI18n();
+  const copy = t.ctaSection;
+  const defaultButtons: CTAButtonProps[] = [
     {
-      text: "Получить консультацию",
+      text: copy.button.text,
       variant: "default",
-      href: "#contact",
+      href: copy.button.href,
     },
-  ],
-  className,
-}: CTAProps) {
+  ];
+
+  const resolvedButtons = buttons === undefined ? defaultButtons : buttons;
+
   return (
     <Section id="cta" className={cn("group relative overflow-hidden", className)}>
       <div className="max-w-container relative z-10 mx-auto flex flex-col items-center gap-6 text-center sm:gap-8">
         <h2 className="max-w-[640px] text-3xl leading-tight font-semibold sm:text-5xl sm:leading-tight">
-          {title}
+          {title || copy.title}
         </h2>
-        {buttons !== false && buttons.length > 0 && (
+        {resolvedButtons !== false && resolvedButtons.length > 0 && (
           <div className="flex justify-center gap-4">
-            {buttons.map((button, index) => (
+            {resolvedButtons.map((button, index) => (
               <Button
                 key={index}
                 variant={button.variant || "default"}

@@ -3,6 +3,7 @@ import "@/app/globals.css";
 import type { Metadata } from "next";
 
 import { ThemeProvider } from "@/components/contexts/theme-provider";
+import { LanguageProvider } from "@/components/contexts/language-context";
 import { inter } from "@/lib/fonts";
 
 import { siteConfig } from "../config/site";
@@ -53,7 +54,9 @@ export default function RootLayout({
   return (
     <html lang="ru" style={{ colorScheme: "dark" }} className="dark">
       <body className={`${inter.className} bg-background antialiased`}>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <LanguageProvider>{children}</LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

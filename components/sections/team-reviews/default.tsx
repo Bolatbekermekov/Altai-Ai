@@ -7,6 +7,8 @@ import gsap from "gsap";
 import { ArrowRight, Quote, Star, ThumbsUp } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { useI18n } from "@/components/contexts/language-context";
+
 interface Review {
   text: string;
   author: {
@@ -64,56 +66,16 @@ const team: TeamMember[] = [
   },
 ];
 
-const reviews: Review[] = [
-  {
-    text: "Запустили многофункциональный лендинг для StrategicLaw Group: заявки пошли с первого дня, CRM связали без сбоев.",
-    author: {
-      name: "Zhaidar Rushanov",
-      role: "Founder",
-      company: "StrategicLaw Group",
-      avatar: "/review/Рушанов_Жайдар.png",
-    },
-    rating: 5,
-  },
-  {
-    text: "Мобильное приложение и CRM для Zeep Coffee автоматизировали заказы и доставку — клиенты оформляют быстрее, команда успевает больше.",
-    author: {
-      name: "Aset Akbar",
-      role: "CEO",
-      company: "Zeep Coffee",
-      avatar: "/review/Асет_Акбар.png",
-    },
-    rating: 5,
-  },
-  {
-    text: "Для сети быстрого питания Frito сделали онлайн-меню, оплату и бота. Средний чек вырос, а повторных заказов стало заметно больше.",
-    author: {
-      name: "Nurmukhametov Dias Otegenuly",
-      role: "General Director",
-      company: "Frito",
-      avatar: "/review/frito.png",
-    },
-    rating: 5,
-  },
-  {
-    text: "CRM и чат-боты для AGRO SOLUTIONS LTD (Астана, ba.prg.kz) автоматизировали продажи агрооборудования и ведение клиентов - команда видит все сделки онлайн.",
-    author: {
-      name: "Mautzhanov Birzhan Galymzhanuly",
-      role: "Director",
-      company: "AGRO SOLUTIONS LTD",
-      avatar: "/review/agro.png",
-    },
-    rating: 5,
-  },
-];
 
 // Team Card - оптимизирован для мобильных
 function TeamCard({
   member,
   isActive,
+  messagePrefix,
 }: {
   member: TeamMember;
   isActive: boolean;
+  messagePrefix: string;
 }) {
   const firstName = member.name.split(" ")[0];
   const isMobile = useIsMobile();
@@ -129,7 +91,7 @@ function TeamCard({
         ].join(" ")}
       >
         <div className="border-border/40 bg-background/40 text-foreground/80 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] backdrop-blur md:gap-2 md:px-3 md:py-1 md:text-xs">
-          написать {firstName}
+          {messagePrefix} {firstName}
           <ArrowRight className="h-2.5 w-2.5 md:h-3 md:w-3" />
         </div>
       </div>
@@ -277,6 +239,9 @@ const containerVariants: Variants = {
 
 export default function TeamReviews() {
   const isMobile = useIsMobile();
+  const { t } = useI18n();
+  const copy = t.team;
+  const reviews = copy.reviews;
 
   // Автоскролл, который НИКОГДА не останавливается
   const autoScroll = useMemo(
@@ -358,16 +323,16 @@ export default function TeamReviews() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="max-w-container mx-auto mb-6 px-4 md:mb-10"
-          >
-            <h2 className="text-3xl font-bold text-white md:text-4xl lg:text-5xl xl:text-6xl">
-              Познакомьтесь с нашей{" "}
-              <span className="from-brand via-brand-foreground to-brand bg-gradient-to-r bg-clip-text text-transparent">
-                командой
-              </span>
-            </h2>
-          </motion.div>
+          transition={{ duration: 0.5 }}
+          className="max-w-container mx-auto mb-6 px-4 md:mb-10"
+        >
+          <h2 className="text-3xl font-bold text-white md:text-4xl lg:text-5xl xl:text-6xl">
+            {copy.title.main}{" "}
+            <span className="from-brand via-brand-foreground to-brand bg-gradient-to-r bg-clip-text text-transparent">
+              {copy.title.highlight}
+            </span>
+          </h2>
+        </motion.div>
 
           <div className="max-w-container mx-auto px-4">
             <div className="relative overflow-hidden">
@@ -393,6 +358,7 @@ export default function TeamReviews() {
                       <TeamCard
                         member={member}
                         isActive={idx === activeIndex}
+                        messagePrefix={copy.messagePrefix}
                       />
                     </div>
                   ))}
@@ -409,15 +375,15 @@ export default function TeamReviews() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="mb-8 md:mb-16"
-            >
-              <h2 className="text-3xl font-bold md:text-4xl lg:text-5xl xl:text-6xl">
-                <span className="from-brand via-brand-foreground to-brand bg-gradient-to-r bg-clip-text text-transparent">
-                  Отзывы
-                </span>
-              </h2>
-            </motion.div>
+            transition={{ duration: 0.5 }}
+            className="mb-8 md:mb-16"
+          >
+            <h2 className="text-3xl font-bold md:text-4xl lg:text-5xl xl:text-6xl">
+              <span className="from-brand via-brand-foreground to-brand bg-gradient-to-r bg-clip-text text-transparent">
+                {copy.reviewsTitle}
+              </span>
+            </h2>
+          </motion.div>
 
             <motion.div
               variants={containerVariants}
@@ -435,21 +401,21 @@ export default function TeamReviews() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="mt-8 text-center md:mt-12"
-            >
-              <a
-                href="#contact"
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mt-8 text-center md:mt-12"
+          >
+            <a
+              href="#contact"
                 className="glass-4 hover:glass-5 group inline-flex touch-manipulation items-center gap-2 rounded-full px-5 py-2.5 transition-all duration-300 md:px-6 md:py-3"
                 style={{ minHeight: "44px", minWidth: "44px" }}
-              >
-                <ThumbsUp className="text-brand size-4 transition-transform group-hover:scale-110 md:size-5" />
-                <span className="text-xs font-medium text-white/90 md:text-sm">
-                  Присоединиться к нашим довольным клиентам
-                </span>
-              </a>
-            </motion.div>
-          </div>
+            >
+              <ThumbsUp className="text-brand size-4 transition-transform group-hover:scale-110 md:size-5" />
+              <span className="text-xs font-medium text-white/90 md:text-sm">
+                {copy.cta}
+              </span>
+            </a>
+          </motion.div>
+        </div>
         </div>
       </div>
     </section>

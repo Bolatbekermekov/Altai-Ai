@@ -18,21 +18,25 @@ import {
   Users,
   Zap,
 } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { JSX, useEffect, useRef } from "react";
 
+import {
+  type Translations,
+  useI18n,
+} from "@/components/contexts/language-context";
 import { cn } from "@/lib/utils";
 
 interface Service {
   id: string;
-  icon: React.ReactNode;
   title: string;
   description: string;
   features?: string[];
-  demo: React.ReactNode;
 }
 
+type ServicesDemoText = Translations["services"]["demoText"];
+
 // E-commerce Demo Component with GSAP
-const EcommerceDemo = () => {
+const EcommerceDemo = ({ demoText }: { demoText: ServicesDemoText }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const cartRef = useRef<HTMLDivElement>(null);
   const priceRef = useRef<HTMLDivElement>(null);
@@ -108,7 +112,7 @@ const EcommerceDemo = () => {
           <div className="flex items-center gap-1.5 sm:gap-2">
             <CreditCard className="text-brand size-4 sm:size-5" />
             <span className="text-xs font-medium sm:text-sm">
-              Оформить заказ
+              {demoText.checkout}
             </span>
           </div>
           <div ref={checkoutRef}>
@@ -227,7 +231,7 @@ const MobileDemo = () => {
 };
 
 // CRM Demo Component with GSAP
-const CRMDemo = () => {
+const CRMDemo = ({ demoText }: { demoText: ServicesDemoText }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<(HTMLDivElement | null)[]>([]);
   const chartBarsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -281,7 +285,9 @@ const CRMDemo = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5 sm:gap-2">
             <Users className="text-brand size-4 sm:size-5" />
-            <span className="text-xs font-medium sm:text-sm">Панель</span>
+            <span className="text-xs font-medium sm:text-sm">
+              {demoText.dashboard}
+            </span>
           </div>
           <TrendingUp className="size-3.5 text-green-500 sm:size-4" />
         </div>
@@ -295,7 +301,7 @@ const CRMDemo = () => {
             className="glass-3 rounded p-1.5 sm:p-2"
           >
             <div className="text-muted-foreground text-[10px] sm:text-xs">
-              Пользователи
+              {demoText.users}
             </div>
             <div className="text-brand text-base font-bold sm:text-lg">
               1,2K
@@ -308,7 +314,7 @@ const CRMDemo = () => {
             className="glass-3 rounded p-1.5 sm:p-2"
           >
             <div className="text-muted-foreground text-[10px] sm:text-xs">
-              Выручка
+              {demoText.revenue}
             </div>
             <div className="text-brand text-base font-bold sm:text-lg">
               $45K
@@ -335,7 +341,7 @@ const CRMDemo = () => {
 };
 
 // Chatbot Demo Component with GSAP
-const ChatbotDemo = () => {
+const ChatbotDemo = ({ demoText }: { demoText: ServicesDemoText }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const userMsgRef = useRef<HTMLDivElement>(null);
   const botMsgRef = useRef<HTMLDivElement>(null);
@@ -404,7 +410,7 @@ const ChatbotDemo = () => {
             <Bot className="text-brand size-3 sm:size-4" />
           </div>
           <span className="text-[10px] font-medium sm:text-xs">
-            AI-ассистент
+            {demoText.assistant}
           </span>
           <div className="ml-auto size-1.5 rounded-full bg-green-500 sm:size-2" />
         </div>
@@ -417,9 +423,7 @@ const ChatbotDemo = () => {
               ref={userMsgRef}
               className="glass-3 max-w-[75%] rounded-lg rounded-tr-none px-2 py-1 sm:max-w-[70%] sm:px-3 sm:py-1.5"
             >
-              <p className="text-[10px] sm:text-xs">
-                Запланируй встречу с Джоном
-              </p>
+              <p className="text-[10px] sm:text-xs">{demoText.userMessage}</p>
             </div>
           </div>
 
@@ -433,7 +437,7 @@ const ChatbotDemo = () => {
               className="glass-4 max-w-[80%] rounded-lg rounded-tl-none px-2 py-1 sm:px-3 sm:py-1.5"
             >
               <p className="mb-1.5 text-[10px] sm:mb-2 sm:text-xs">
-                Я запланировал встречу в Google Meet с Джоном на завтра, 15:45.
+                {demoText.botMessage}
               </p>
               <div
                 ref={meetCardRef}
@@ -441,7 +445,7 @@ const ChatbotDemo = () => {
               >
                 <MessageSquare className="text-brand size-2.5 sm:size-3" />
                 <span className="text-[9px] sm:text-[10px]">
-                  Google Meet с Джоном
+                  {demoText.botMeet}
                 </span>
               </div>
             </div>
@@ -471,7 +475,7 @@ const ChatbotDemo = () => {
 };
 
 // SaaS Demo Component with GSAP
-const SaaSDemo = () => {
+const SaaSDemo = ({ demoText }: { demoText: ServicesDemoText }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mrrRef = useRef<HTMLDivElement>(null);
   const trendRef = useRef<HTMLDivElement>(null);
@@ -543,7 +547,9 @@ const SaaSDemo = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5 sm:gap-2">
             <Zap className="text-brand size-4 sm:size-5" />
-            <span className="text-xs font-medium sm:text-sm">Метрики SaaS</span>
+            <span className="text-xs font-medium sm:text-sm">
+              {demoText.saasMetrics}
+            </span>
           </div>
         </div>
 
@@ -578,7 +584,7 @@ const SaaSDemo = () => {
               className="glass-3 rounded p-1.5 sm:p-2"
             >
               <div className="text-muted-foreground text-[9px] sm:text-[10px]">
-                Активные пользователи
+                {demoText.activeUsers}
               </div>
               <div className="text-xs font-bold sm:text-sm">845</div>
             </div>
@@ -589,7 +595,7 @@ const SaaSDemo = () => {
               className="glass-3 rounded p-1.5 sm:p-2"
             >
               <div className="text-muted-foreground text-[9px] sm:text-[10px]">
-                Отток
+                {demoText.churn}
               </div>
               <div className="text-xs font-bold text-green-500 sm:text-sm">
                 2.3%
@@ -599,21 +605,23 @@ const SaaSDemo = () => {
 
           {/* Features */}
           <div className="space-y-1 pt-0.5 sm:space-y-1.5 sm:pt-1">
-            {["Автоскейлинг", "Мультиарендность"].map((feature, i) => (
-              <div
-                key={feature}
-                className="flex items-center gap-1.5 text-[10px] sm:gap-2 sm:text-xs"
-              >
+            {[demoText.featureAutoScaling, demoText.featureMultiTenant].map(
+              (feature, i) => (
                 <div
-                  ref={(el) => {
-                    checkmarksRef.current[i] = el;
-                  }}
+                  key={feature}
+                  className="flex items-center gap-1.5 text-[10px] sm:gap-2 sm:text-xs"
                 >
-                  <Check className="text-brand size-2.5 sm:size-3" />
+                  <div
+                    ref={(el) => {
+                      checkmarksRef.current[i] = el;
+                    }}
+                  >
+                    <Check className="text-brand size-2.5 sm:size-3" />
+                  </div>
+                  <span className="text-muted-foreground">{feature}</span>
                 </div>
-                <span className="text-muted-foreground">{feature}</span>
-              </div>
-            ))}
+              ),
+            )}
           </div>
         </div>
       </div>
@@ -622,7 +630,7 @@ const SaaSDemo = () => {
 };
 
 // Landing Pages Demo Component with GSAP
-const LandingDemo = () => {
+const LandingDemo = ({ demoText }: { demoText: ServicesDemoText }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
@@ -718,7 +726,7 @@ const LandingDemo = () => {
           <div ref={heroRef} className="space-y-1.5 text-center sm:space-y-2">
             <div className="relative inline-block">
               <h3 className="from-brand via-brand-foreground to-brand bg-gradient-to-r bg-clip-text text-[10px] font-bold text-transparent sm:text-xs">
-                Запускайте быстрее
+                {demoText.landingHeadline}
               </h3>
               {/* Sparkles */}
               {[0, 1, 2].map((i) => (
@@ -745,7 +753,7 @@ const LandingDemo = () => {
             >
               <Rocket className="text-brand size-2.5 sm:size-3" />
               <span className="text-[9px] font-medium sm:text-[10px]">
-                Начать
+                {demoText.landingCta}
               </span>
             </div>
           </div>
@@ -791,66 +799,33 @@ const LandingDemo = () => {
   );
 };
 
-const services: Service[] = [
-  {
-    id: "ecommerce",
-    icon: <ShoppingCart className="size-6 sm:size-8" />,
-    title: "Интернет-магазины",
-    description:
-      "Онлайн-магазины и маркетплейсы с полным циклом разработки от MVP до масштабируемой платформы",
-    features: ["Платежные системы", "Управление товаром", "Аналитика"],
-    demo: <EcommerceDemo />,
-  },
-  {
-    id: "landing",
-    icon: <Layout className="size-6 sm:size-8" />,
-    title: "Лендинги",
-    description:
-      "Конверсионные лендинги с современным дизайном и оптимизацией под высокую конверсию",
-    features: ["Высокая конверсия", "SEO-оптимизация", "Готово к A/B-тестам"],
-    demo: <LandingDemo />,
-  },
-  {
-    id: "mobile",
-    icon: <Laptop className="size-6 sm:size-8" />,
-    title: "Мобильные приложения",
-    description:
-      "Нативные и кросс-платформенные приложения для iOS и Android с современным UX",
-    features: ["React Native", "iOS/Android", "Push-уведомления"],
-    demo: <MobileDemo />,
-  },
-  {
-    id: "crm",
-    icon: <Code className="size-6 sm:size-8" />,
-    title: "CRM и SaaS",
-    description:
-      "Корпоративные системы управления, CRM и SaaS продукты под ключ с интеграциями",
-    features: [
-      "Кастомные процессы",
-      "Интеграции по API",
-      "Облачная архитектура",
-    ],
-    demo: <CRMDemo />,
-  },
-  {
-    id: "chatbot",
-    icon: <Bot className="size-6 sm:size-8" />,
-    title: "Разработка чат-ботов",
-    description:
-      "Интеллектуальные чат-боты с AI для автоматизации поддержки и продаж",
-    features: ["NLP/AI", "Мультиканальность", "Поддержка 24/7"],
-    demo: <ChatbotDemo />,
-  },
-  {
-    id: "saas",
-    icon: <Zap className="size-6 sm:size-8" />,
-    title: "SaaS-продукты",
-    description:
-      "Разработка SaaS решений с подписочной моделью, аналитикой и масштабированием",
-    features: ["Подписочная модель", "Мультиарендность", "Автоскейлинг"],
-    demo: <SaaSDemo />,
-  },
-];
+const serviceIcons: Record<string, JSX.Element> = {
+  ecommerce: <ShoppingCart className="size-6 sm:size-8" />,
+  landing: <Layout className="size-6 sm:size-8" />,
+  mobile: <Laptop className="size-6 sm:size-8" />,
+  crm: <Code className="size-6 sm:size-8" />,
+  chatbot: <Bot className="size-6 sm:size-8" />,
+  saas: <Zap className="size-6 sm:size-8" />,
+};
+
+const renderDemo = (id: string, demoText: ServicesDemoText) => {
+  switch (id) {
+    case "ecommerce":
+      return <EcommerceDemo demoText={demoText} />;
+    case "landing":
+      return <LandingDemo demoText={demoText} />;
+    case "mobile":
+      return <MobileDemo />;
+    case "crm":
+      return <CRMDemo demoText={demoText} />;
+    case "chatbot":
+      return <ChatbotDemo demoText={demoText} />;
+    case "saas":
+      return <SaaSDemo demoText={demoText} />;
+    default:
+      return null;
+  }
+};
 
 const containerVariants: Variants = {
   hidden: {
@@ -883,6 +858,11 @@ const itemVariants: Variants = {
 };
 
 export default function Services() {
+  const { t } = useI18n();
+  const copy = t.services;
+  const services = copy.items;
+  const demoText = copy.demoText;
+
   return (
     <section
       id="services"
@@ -911,20 +891,19 @@ export default function Services() {
             className="inline-block"
           >
             <span className="glass-4 text-brand rounded-full px-3 py-1.5 text-xs font-medium sm:px-4 sm:py-2 sm:text-sm">
-              Наши услуги
+              {copy.tag}
             </span>
           </motion.div>
 
           <h2 className="text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl">
-            Что мы{" "}
+            {copy.title.main}{" "}
             <span className="from-brand via-brand-foreground to-brand bg-gradient-to-r bg-clip-text text-transparent">
-              делаем
+              {copy.title.highlight}
             </span>
           </h2>
 
           <p className="text-muted-foreground mx-auto max-w-2xl px-4 text-base sm:text-lg md:text-xl">
-            Полный цикл разработки от идеи до запуска и поддержки вашего
-            продукта
+            {copy.subtitle}
           </p>
         </motion.div>
 
@@ -960,7 +939,9 @@ export default function Services() {
                 {/* Content */}
                 <div className="relative z-10 space-y-3 sm:space-y-4">
                   {/* Demo UI */}
-                  <div className="mb-3 sm:mb-4">{service.demo}</div>
+                  <div className="mb-3 sm:mb-4">
+                    {renderDemo(service.id, demoText)}
+                  </div>
 
                   {/* Icon & Title */}
                   <div className="flex items-center gap-2 sm:gap-3">
@@ -972,7 +953,9 @@ export default function Services() {
                         transition: { type: "spring", stiffness: 400 },
                       }}
                     >
-                      {service.icon}
+                      {serviceIcons[service.id] || (
+                        <Sparkles className="size-6 sm:size-8" />
+                      )}
                     </motion.div>
                     <h3 className="text-foreground text-lg font-bold sm:text-xl">
                       {service.title}

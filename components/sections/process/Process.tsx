@@ -14,6 +14,10 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import {
+  type Translations,
+  useI18n,
+} from "@/components/contexts/language-context";
 import { cn } from "@/lib/utils";
 
 // Hook для определения мобильного устройства
@@ -34,7 +38,6 @@ const useIsMobile = () => {
 };
 
 interface ProcessStep {
-  number: string;
   title: string;
   description: string;
   visual: React.ReactNode;
@@ -46,6 +49,8 @@ interface Statistic {
   description: string;
   icon: React.ReactNode;
 }
+
+type ProcessLabels = Translations["process"]["labels"];
 
 // Упрощенный Analyze Visual для мобильных
 const AnalyzeVisual = () => {
@@ -215,7 +220,7 @@ const BuildVisual = () => {
 };
 
 // Упрощенный Maintain Visual
-const MaintainVisual = () => {
+const MaintainVisual = ({ labels }: { labels: ProcessLabels }) => {
   const metricsRef = useRef<(HTMLDivElement | null)[]>([]);
   const updateRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
@@ -256,9 +261,9 @@ const MaintainVisual = () => {
   }, [isMobile, prefersReducedMotion]);
 
   const metrics = [
-    { label: "Скорость", value: "+38%" },
-    { label: "Эффективность", value: "+25%" },
-    { label: "Затраты", value: "-11%" },
+    { label: labels.speed, value: "+38%" },
+    { label: labels.efficiency, value: "+25%" },
+    { label: labels.costs, value: "-11%" },
   ];
 
   return (
@@ -282,72 +287,23 @@ const MaintainVisual = () => {
         ))}
 
         <div
-          ref={updateRef}
-          className="glass-4 flex items-center justify-between rounded-lg p-2 md:p-3"
-        >
-          <span className="text-[10px] font-medium md:text-xs">Обновление</span>
-          <div className="glass-2 flex items-center gap-1 rounded px-1.5 py-0.5 md:px-2 md:py-1">
-            <span className="text-brand text-[9px] font-medium md:text-[10px]">
-              Обновить
-            </span>
-            <ArrowUpRight className="text-brand size-2.5 md:size-3" />
-          </div>
+        ref={updateRef}
+        className="glass-4 flex items-center justify-between rounded-lg p-2 md:p-3"
+      >
+        <span className="text-[10px] font-medium md:text-xs">
+          {labels.update}
+        </span>
+        <div className="glass-2 flex items-center gap-1 rounded px-1.5 py-0.5 md:px-2 md:py-1">
+          <span className="text-brand text-[9px] font-medium md:text-[10px]">
+            {labels.updateCta}
+          </span>
+          <ArrowUpRight className="text-brand size-2.5 md:size-3" />
         </div>
+      </div>
       </div>
     </div>
   );
 };
-
-const processSteps: ProcessStep[] = [
-  {
-    number: "01",
-    title: "Анализ",
-    description:
-      "Начинаем с глубокого анализа текущих процессов, чтобы понять, где AI даст максимальный эффект.",
-    visual: <AnalyzeVisual />,
-  },
-  {
-    number: "02",
-    title: "Разработка и внедрение",
-    description:
-      "Создаём кастомное AI-решение для вашей компании, соблюдая качество и безопасность на каждом этапе.",
-    visual: <BuildVisual />,
-  },
-  {
-    number: "03",
-    title: "Поддержка и развитие",
-    description:
-      "После запуска поддерживаем и улучшаем решение, чтобы оно продолжало приносить результат.",
-    visual: <MaintainVisual />,
-  },
-];
-
-const statistics: Statistic[] = [
-  {
-    label: "Проектов завершено",
-    value: "5",
-    description: "Первые лендинги, боты и CRM запущены в 2024–2025.",
-    icon: <Rocket className="text-brand size-5 md:size-6" />,
-  },
-  {
-    label: "Коммерческих клиентов",
-    value: "4",
-    description: "Пилоты и запуски с реальными референсами.",
-    icon: <CheckCircle2 className="text-brand size-5 md:size-6" />,
-  },
-  {
-    label: "Экономия времени в день",
-    value: "4",
-    description: "Сокращаем рутину примерно на 2 часа в день.",
-    icon: <TrendingUp className="text-brand size-5 md:size-6" />,
-  },
-  {
-    label: "Экономия в месяц, $",
-    value: "5000",
-    description: "По оценке клиентов после автоматизации.",
-    icon: <LineChart className="text-brand size-5 md:size-6" />,
-  },
-];
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -388,6 +344,22 @@ export default function Process() {
   const numberRefs = useRef<(HTMLDivElement | null)[]>([]);
   const isMobile = useIsMobile();
   const prefersReducedMotion = useReducedMotion();
+  const { t } = useI18n();
+  const copy = t.process;
+  const labels = copy.labels;
+  const steps = copy.steps;
+  const stats = copy.statistics;
+  const visuals = [
+    <AnalyzeVisual key="analyze" />,
+    <BuildVisual key="build" />,
+    <MaintainVisual key="maintain" labels={labels} />,
+  ];
+  const statIcons = [
+    <Rocket className="text-brand size-5 md:size-6" />,
+    <CheckCircle2 className="text-brand size-5 md:size-6" />,
+    <TrendingUp className="text-brand size-5 md:size-6" />,
+    <LineChart className="text-brand size-5 md:size-6" />,
+  ];
 
   useEffect(() => {
     if (prefersReducedMotion) return;
@@ -426,16 +398,16 @@ export default function Process() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="mb-8 md:mb-16"
-          >
-            <h2 className="mb-3 text-3xl font-bold md:mb-4 md:text-5xl lg:text-6xl">
-              Наш{" "}
-              <span className="from-brand via-brand-foreground to-brand bg-gradient-to-r bg-clip-text text-transparent">
-                процесс
-              </span>
-            </h2>
-          </motion.div>
+          transition={{ duration: 0.5 }}
+          className="mb-8 md:mb-16"
+        >
+          <h2 className="mb-3 text-3xl font-bold md:mb-4 md:text-5xl lg:text-6xl">
+            {copy.title.main}{" "}
+            <span className="from-brand via-brand-foreground to-brand bg-gradient-to-r bg-clip-text text-transparent">
+              {copy.title.highlight}
+            </span>
+          </h2>
+        </motion.div>
 
           <motion.div
             variants={containerVariants}
@@ -444,35 +416,39 @@ export default function Process() {
             viewport={{ once: true, margin: "-50px" }}
             className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3"
           >
-            {processSteps.map((step) => (
-              <motion.div
-                key={step.number}
-                variants={itemVariants}
-                className="group relative"
-              >
-                <div className="glass-4 hover:glass-5 h-full rounded-xl p-4 transition-all duration-300 md:rounded-2xl md:p-6">
-                  <div className="mb-4 md:mb-6">{step.visual}</div>
+            {steps.map((step, index) => {
+              const visual = visuals[index] || null;
+              const numberLabel = String(index + 1).padStart(2, "0");
+              return (
+                <motion.div
+                  key={`${step.title}-${index}`}
+                  variants={itemVariants}
+                  className="group relative"
+                >
+                  <div className="glass-4 hover:glass-5 h-full rounded-xl p-4 transition-all duration-300 md:rounded-2xl md:p-6">
+                    <div className="mb-4 md:mb-6">{visual}</div>
 
-                  <div className="space-y-2 md:space-y-3">
-                    <div className="flex items-center gap-2 md:gap-3">
-                      <span className="text-brand text-base font-bold md:text-lg">
-                        {step.number}
-                      </span>
-                      <h3 className="text-xl font-bold md:text-2xl">
-                        {step.title}
-                      </h3>
+                    <div className="space-y-2 md:space-y-3">
+                      <div className="flex items-center gap-2 md:gap-3">
+                        <span className="text-brand text-base font-bold md:text-lg">
+                          {numberLabel}
+                        </span>
+                        <h3 className="text-xl font-bold md:text-2xl">
+                          {step.title}
+                        </h3>
+                      </div>
+                      <p className="text-muted-foreground text-xs leading-relaxed md:text-sm">
+                        {step.description}
+                      </p>
                     </div>
-                    <p className="text-muted-foreground text-xs leading-relaxed md:text-sm">
-                      {step.description}
-                    </p>
-                  </div>
 
-                  <div className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:rounded-2xl">
-                    <div className="from-brand/20 to-brand-foreground/20 absolute inset-0 rounded-xl bg-gradient-to-br via-transparent blur-xl md:rounded-2xl" />
+                    <div className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:rounded-2xl">
+                      <div className="from-brand/20 to-brand-foreground/20 absolute inset-0 rounded-xl bg-gradient-to-br via-transparent blur-xl md:rounded-2xl" />
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
 
@@ -482,16 +458,16 @@ export default function Process() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="mb-8 md:mb-16"
-          >
-            <h2 className="text-3xl font-bold md:text-5xl lg:text-6xl">
-              Наши{" "}
-              <span className="from-brand via-brand-foreground to-brand bg-gradient-to-r bg-clip-text text-transparent">
-                результаты
-              </span>
-            </h2>
-          </motion.div>
+          transition={{ duration: 0.5 }}
+          className="mb-8 md:mb-16"
+        >
+          <h2 className="text-3xl font-bold md:text-5xl lg:text-6xl">
+            {copy.statisticsTitle.main}{" "}
+            <span className="from-brand via-brand-foreground to-brand bg-gradient-to-r bg-clip-text text-transparent">
+              {copy.statisticsTitle.highlight}
+            </span>
+          </h2>
+        </motion.div>
 
           <motion.div
             variants={containerVariants}
@@ -500,14 +476,16 @@ export default function Process() {
             viewport={{ once: true, margin: "-50px" }}
             className="grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4"
           >
-            {statistics.map((stat, index) => (
+            {stats.map((stat, index) => {
+              const icon = statIcons[index] || statIcons[0];
+              return (
               <motion.div
                 key={stat.label}
                 variants={statVariants}
                 className="group relative"
               >
                 <div className="glass-4 hover:glass-5 h-full rounded-xl p-4 transition-all duration-300 md:rounded-2xl md:p-6">
-                  <div className="mb-2 md:mb-4">{stat.icon}</div>
+                  <div className="mb-2 md:mb-4">{icon}</div>
 
                   <h3 className="text-muted-foreground mb-2 text-[10px] font-medium md:mb-3 md:text-sm">
                     {stat.label}
@@ -529,7 +507,8 @@ export default function Process() {
                   <div className="bg-brand/50 absolute top-4 right-4 size-1.5 rounded-full md:top-6 md:right-6 md:size-2" />
                 </div>
               </motion.div>
-            ))}
+            );
+            })}
           </motion.div>
         </div>
       </div>
