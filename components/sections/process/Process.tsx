@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   ArrowUpRight,
   CheckCircle2,
@@ -51,6 +52,24 @@ interface Statistic {
 }
 
 type ProcessLabels = Translations["process"]["labels"];
+
+const emptyProcessCopy: Translations["process"] = {
+  title: { main: "", highlight: "" },
+  steps: [],
+  statisticsTitle: { main: "", highlight: "" },
+  statistics: [],
+  labels: {
+    speed: "",
+    efficiency: "",
+    costs: "",
+    update: "",
+    updateCta: "",
+  },
+};
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 // Упрощенный Analyze Visual для мобильных
 const AnalyzeVisual = () => {
@@ -344,11 +363,14 @@ export default function Process() {
   const numberRefs = useRef<(HTMLDivElement | null)[]>([]);
   const isMobile = useIsMobile();
   const prefersReducedMotion = useReducedMotion();
-  const { t } = useI18n();
-  const copy = t.process;
-  const labels = copy.labels;
-  const steps = copy.steps;
-  const stats = copy.statistics;
+  const { t, language } = useI18n();
+  const processCopy = t?.process ?? emptyProcessCopy;
+  const labels = processCopy.labels ?? emptyProcessCopy.labels;
+  const steps = processCopy.steps ?? emptyProcessCopy.steps;
+  const stats = processCopy.statistics ?? emptyProcessCopy.statistics;
+  const title = processCopy.title ?? emptyProcessCopy.title;
+  const statisticsTitle =
+    processCopy.statisticsTitle ?? emptyProcessCopy.statisticsTitle;
   const visuals = [
     <AnalyzeVisual key="analyze" />,
     <BuildVisual key="build" />,
@@ -364,6 +386,8 @@ export default function Process() {
   useEffect(() => {
     if (prefersReducedMotion) return;
 
+    // Recreate triggers when screen size or data changes to avoid stale refs
+    gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       numberRefs.current.forEach((num) => {
         if (num) {
@@ -382,10 +406,11 @@ export default function Process() {
     });
 
     return () => ctx.revert();
-  }, [isMobile, prefersReducedMotion]);
+  }, [isMobile, prefersReducedMotion, stats, language]);
 
   return (
     <section
+      key={language}
       id="process"
       className="relative overflow-hidden px-4 py-12 md:py-24"
     >
@@ -402,9 +427,9 @@ export default function Process() {
           className="mb-8 md:mb-16"
         >
           <h2 className="mb-3 text-3xl font-bold md:mb-4 md:text-5xl lg:text-6xl">
-            {copy.title.main}{" "}
+            {title.main}{" "}
             <span className="from-brand via-brand-foreground to-brand bg-gradient-to-r bg-clip-text text-transparent">
-              {copy.title.highlight}
+              {title.highlight}
             </span>
           </h2>
         </motion.div>
@@ -462,9 +487,9 @@ export default function Process() {
           className="mb-8 md:mb-16"
         >
           <h2 className="text-3xl font-bold md:text-5xl lg:text-6xl">
-            {copy.statisticsTitle.main}{" "}
+            {statisticsTitle.main}{" "}
             <span className="from-brand via-brand-foreground to-brand bg-gradient-to-r bg-clip-text text-transparent">
-              {copy.statisticsTitle.highlight}
+              {statisticsTitle.highlight}
             </span>
           </h2>
         </motion.div>

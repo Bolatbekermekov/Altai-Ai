@@ -36,18 +36,31 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<Language>("ru");
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("language");
-    if (stored === "en" || stored === "ru") {
-      setLanguage(stored);
-    }
+    const initial = stored === "en" || stored === "ru" ? stored : "ru";
+    setLanguage(initial);
+    document.documentElement.lang = initial;
+    setIsReady(true);
   }, []);
 
   useEffect(() => {
+    if (!isReady) return;
     localStorage.setItem("language", language);
     document.documentElement.lang = language;
-  }, [language]);
+  }, [language, isReady]);
+
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === "language" && (event.newValue === "en" || event.newValue === "ru")) {
+        setLanguage(event.newValue);
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -62,7 +75,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <LanguageContext.Provider value={value}>
-      {children}
+      <div style={{ visibility: isReady ? "visible" : "hidden" }}>{children}</div>
     </LanguageContext.Provider>
   );
 }
